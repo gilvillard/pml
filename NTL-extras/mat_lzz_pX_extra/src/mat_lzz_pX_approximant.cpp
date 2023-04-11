@@ -338,6 +338,82 @@ void appbas_iterative_2x1(
     }
 }
 
+
+void appbas_iterative_2x1_2(
+                          Mat<zz_pX> &appbas,
+                          const Mat<zz_pX> & pmat,
+                          const long order,
+                          VecLong & shift
+                          )
+{
+    // initial approximant basis: identity of dimensions '2 x 2'
+    appbas.SetDims(2,2);
+    appbas[0][0] = 1;
+    appbas[0][1] = 0;
+    appbas[1][0] = 0;
+    appbas[1][1] = 1;
+    // initial residual: the whole input f,g
+    zz_pX r0 = pmat[0][0];
+    zz_pX r1 = pmat[1][0];
+    // will store the considered low-degree coefficient of residual,
+    // and their quotient when applicable
+    zz_p c0,c1,c;
+
+    // all along the algorithm, shift (s0,s1) = shifted row degrees of approximant basis
+    // (initially, input shift = shifted row degree of the identity matrix)
+    for (long ord=0; ord<order; ++ord)
+    {
+        /** Invariant:
+         *  - appbas is a shift-ordered weak Popov approximant basis for (pmat,ord)
+         *    at the beginning of the loop, and (pmat,ord+1) at the end of the loop
+         *  - (s0,s1) == the "input shift"-row degree of appbas
+         *  - (r0,r1) == (appbas * [f,g]^t)
+         */
+        c0 = coeff(r0,ord); c1 = coeff(r1,ord);
+        if (not IsZero(c0) && not IsZero(c1))
+        {
+            // most expected case: both coeffs are nonzero
+            if (shift[0] <= shift[1])
+            {
+                // s0 <= s1 ==> use row 1 as pivot
+                c = -c1/c0;
+                appbas[1][0] = appbas[1][0] + c*appbas[0][0];
+                appbas[1][1] = appbas[1][1] + c*appbas[0][1];
+                appbas[0][0] <<= 1; appbas[0][1] <<= 1;
+                r1 = r1 + c*r0;
+                r0 <<= 1;
+                shift[0] += 1;
+            }
+            else
+            {
+                // s0 > s1 ==> use row 2 as pivot
+                c = -c0/c1;
+                appbas[0][0] = appbas[0][0] + c*appbas[1][0];
+                appbas[0][1] = appbas[0][1] + c*appbas[1][1];
+                appbas[1][0] <<= 1; appbas[1][1] <<= 1;
+                r0 = r0 + c*r1;
+                r1 <<= 1;
+                shift[1] += 1;
+            }
+        }
+        else if (not IsZero(c1))
+        {
+            // multiply row 2 by x, do nothing on row 1
+            appbas[1][0] <<= 1; appbas[1][1] <<= 1;
+            r1 <<= 1;
+            shift[1] += 1;
+        }
+        else if (not IsZero(c0))
+        {
+            // multiply row 1 by x, do nothing on row 2
+            appbas[0][0] <<= 1; appbas[0][1] <<= 1;
+            r0 <<= 1;
+            shift[0] += 1;
+        }
+        // else, both coeffs are zero, do nothing
+    }
+}
+
 /*------------------------------------------------------------*/
 /* general case, output in Popov form                         */
 /*------------------------------------------------------------*/

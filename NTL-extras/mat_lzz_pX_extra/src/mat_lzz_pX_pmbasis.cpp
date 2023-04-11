@@ -2,6 +2,8 @@
 
 #include "lzz_pX_middle_product.h"
 #include "mat_lzz_pX_approximant.h"
+#include <NTL/lzz_pX.h>
+
 
 //#define MBASIS1_PROFILE
 //#define MBASIS_PROFILE
@@ -1517,12 +1519,12 @@ void pmbasis(
     Mat<zz_pX> appbas2; // basis for second call
     pmbasis(appbas2,residual,order2,shift);
 
-    // final basis = appbas2 * appbas
+    // FINAL BASIS = appbas2 * appbas
     multiply(appbas,appbas2,appbas);
 }
 
 /*------------------------------------------------------------*/
-/* Divide and Conquer: PMBasis returning Popov                */
+/* divide and Conquer: PMBasis returning Popov                */
 /*------------------------------------------------------------*/
 void popov_pmbasis(
                    Mat<zz_pX> &appbas,
@@ -1556,7 +1558,243 @@ void popov_pmbasis(
     mul(appbas,lmat,appbas);
 }
 
+
+void mul_ntl(Mat<zz_pX>& A, Mat<zz_pX>& B, Mat<zz_pX>& C)
+// A = B*C, B and C are destroyed
+{
+   long db = deg(B(1,1));
+   long dc = deg(C(1,1));
+   long da = db + dc;
+
+   long k = NextPowerOfTwo(da+1);
+
+   fftRep B00, B01, B10, B11, C0, C1, T1, T2;
+   
+   TofftRep(B00, B[0][0], k); B[0][0].kill();
+   TofftRep(B01, B[0][1], k); B[0][1].kill();
+   TofftRep(B10, B[1][0], k); B[1][0].kill();
+   TofftRep(B11, B[1][1], k); B[1][1].kill();
+
+   TofftRep(C0, C[0][0], k);  C[0][0].kill();
+   TofftRep(C1, C[1][0], k);  C[1][0].kill();
+
+   mul(T1, B00, C0);
+   mul(T2, B01, C1);
+   add(T1, T1, T2);
+   FromfftRep(A[0][0], T1, 0, da);
+
+   mul(T1, B10, C0);
+   mul(T2, B11, C1);
+   add(T1, T1, T2);
+   FromfftRep(A[1][0], T1, 0, da);
+
+   TofftRep(C0, C[0][1], k);  C[0][1].kill();
+   TofftRep(C1, C[1][1], k);  C[1][1].kill();
+
+   mul(T1, B00, C0);
+   mul(T2, B01, C1);
+   add(T1, T1, T2);
+   FromfftRep(A[0][1], T1, 0, da);
+
+   mul(T1, B10, C0);
+   mul(T2, B11, C1);
+   add(T1, T1, T2);
+   FromfftRep(A[1][1], T1, 0, da);
+}
+
 void pmbasis_2x1(
+                 zz_pX & p00,
+                 zz_pX & p01,
+                 zz_pX & p10,
+                 zz_pX & p11,
+                 const zz_pX & f0,
+                 const zz_pX & f1,
+                 long order,
+                 long & s0,
+                 long & s1,
+                 long alg,
+                 long threshold                 
+                 )
+{
+    if (order <= threshold) // TODO thresholds to be determined
+    {
+        appbas_iterative_2x1(p00,p01,p10,p11,f0,f1,order,s0,s1);
+        return;
+    }
+
+    long order1 = order>>1; // order of first call
+    long order2 = order-order1; // order of second call
+
+
+    // first recursive call, with 'pmat' and 'shift'
+    pmbasis_2x1(p00,p01,p10,p11,trunc(f0,order1),trunc(f1,order1),order1,s0,s1,alg,threshold);
+  
+    // (s0,s1) is now the shifted row degree of appbas,
+    // which is the shift for second call
+
+    // residual = (appbas * pmat * X^-order1) mod X^order2
+    ////version 1:
+    //zz_pX tmp,r0,r1;
+    //middle_product(r0,p00,f0,order1,order2-1);
+    //middle_product(r1,p01,f1,order1,order2-1); // using r1 as temporary
+    //r0 += r1;
+    //middle_product(r1,p10,f0,order1,order2-1);
+    //middle_product(tmp,p11,f1,order1,order2-1); // using tf0 as temporary
+    //r1 += tmp;
+    ////version 2:
+    //zz_pX r0,r1;
+    //RightShift(r0, MulTrunc(p00, f0, order) + MulTrunc(p01, f1, order), order1);
+    //RightShift(r1, MulTrunc(p10, f0, order) + MulTrunc(p11, f1, order), order1);
+    ////version3:
+  
+    Mat<zz_pX> res, tmp;
+    Mat<zz_pX> appbas,appbas2;
+    appbas.SetDims(2,2);
+    appbas[0][0] = p00;
+    appbas[0][1] = p01;
+    appbas[1][0] = p10;
+    appbas[1][1] = p11;
+    tmp.SetDims(2,1);
+    tmp[0][0] = f0;
+    tmp[1][0] = f1;
+    RightShift(tmp, tmp, order1-deg(appbas));
+
+      switch(alg)
+        {
+        case 0:
+            middle_product_evaluate_FFT_new(res, appbas, tmp, deg(appbas), order2 + deg(appbas));
+            break;
+            
+        case 1:
+            middle_product_evaluate_FFT_direct_ll_type(res, appbas, tmp, deg(appbas), order2 + deg(appbas));
+            break;
+            
+        case 2:
+            middle_product_evaluate_FFT_direct(res, appbas, tmp, deg(appbas), order2 + deg(appbas));
+            break;
+        case 3:
+            middle_product_evaluate_FFT_matmul(res, appbas, tmp, deg(appbas), order2 + deg(appbas));
+            break;
+        case 4:
+            middle_product_evaluate_FFT_matmul1(res, appbas, tmp, deg(appbas), order2 + deg(appbas));
+            break;
+        case 5:
+            middle_product_evaluate_FFT_matmul2(res, appbas, tmp, deg(appbas), order2 + deg(appbas));
+            break;
+        case 6:
+            middle_product_evaluate_FFT(res, appbas, tmp, deg(appbas), order2 + deg(appbas));
+            break;
+        case 7:
+            middle_product_naive(res, appbas, tmp, deg(appbas), order2 + deg(appbas));
+            break;
+        case 8:
+            middle_product(res, appbas, tmp, deg(appbas), order2 + deg(appbas));
+        }
+
+    
+    // second recursive call, with the 'residual' (r1,r2) and updated (s0,s1)
+   
+    zz_pX q00,q01,q10,q11; // basis for second call
+    pmbasis_2x1(q00,q01,q10,q11,res[0][0],res[1][0],order2,s0,s1,alg,threshold);
+
+
+    // second recursive call, with the 'residual' (r1,r2) and updated (s0,s1)
+    //zz_pX q00,q01,q10,q11; // basis for second call
+    //pmbasis_2x1(q00,q01,q10,q11,r0,r1,order2,s0,s1,threshold);
+
+    // final basis = product of the two
+    //Mat<zz_pX> appbas,appbas2;
+    //appbas.SetDims(2,2);
+    //appbas[0][0] = p00;
+    //appbas[0][1] = p01;
+    //appbas[1][0] = p10;
+    //appbas[1][1] = p11;
+    
+    appbas2.SetDims(2,2);
+    appbas2[0][0] = q00;
+    appbas2[0][1] = q01;
+    appbas2[1][0] = q10;
+    appbas2[1][1] = q11;
+    multiply_waksman(appbas,appbas2,appbas);
+    p00 = appbas[0][0];
+    p01 = appbas[0][1];
+    p10 = appbas[1][0];
+    p11 = appbas[1][1];
+  
+}
+
+
+/// Kevin's tests implem gcd  ///
+
+
+void pmbasis_gcd(
+                 Mat<zz_pX> &appbas,
+                 const Mat<zz_pX> & pmat,
+                 const long order,
+                 VecLong & shift,
+                 long alg
+                 )
+{
+    if (order <= 32) // TODO thresholds to be determined
+    {
+        appbas_iterative_2x1_2(appbas,pmat,order,shift);
+        return;
+    }
+
+    long order1 = order>>1; // order of first call
+    long order2 = order-order1; // order of second call
+
+    pmbasis_gcd(appbas,pmat,order1,shift, alg);
+    
+    // shift is now the shifted row degree of appbas,
+    // which is the shift for second call
+   
+    // residual = (appbas * pmat * X^-order1) mod X^order2
+    Mat<zz_pX> residual,truncpmat; // for the residual
+    RightShift(truncpmat,pmat, order1-deg(appbas));
+
+    switch(alg)
+        {
+        case 0:
+            middle_product_evaluate_FFT_new(residual, appbas, truncpmat, deg(appbas), order2 + deg(appbas));
+            break;
+            
+        case 1:
+            middle_product_evaluate_FFT_direct_ll_type(residual, appbas, truncpmat, deg(appbas), order2 + deg(appbas));
+            break;
+            
+        case 2:
+            middle_product_evaluate_FFT_direct(residual, appbas, truncpmat, deg(appbas), order2 + deg(appbas));
+            break;
+        case 3:
+            middle_product_evaluate_FFT_matmul(residual, appbas, truncpmat, deg(appbas), order2 + deg(appbas));
+            break;
+        case 4:
+            middle_product_evaluate_FFT_matmul1(residual, appbas, truncpmat, deg(appbas), order2 + deg(appbas));
+            break;
+        case 5:
+            middle_product_evaluate_FFT_matmul2(residual, appbas, truncpmat, deg(appbas), order2 + deg(appbas));
+            break;
+        case 6:
+            middle_product_evaluate_FFT(residual, appbas, truncpmat, deg(appbas), order2 + deg(appbas));
+            break;
+        case 7:
+            middle_product_naive(residual, appbas, truncpmat, deg(appbas), order2 + deg(appbas));
+            break;
+        case 8:
+            middle_product(residual, appbas, truncpmat, deg(appbas), order2 + deg(appbas));
+        }
+
+    // second recursive call, with 'residual' and 'rdeg'
+    Mat<zz_pX> appbas2; // basis for second call
+    pmbasis_gcd(appbas2,residual,order2,shift, alg);
+    
+    // final basis = appbas2 * appbas
+    
+    mul_ntl(appbas,appbas2,appbas);
+}
+
+void pmbasis_2x1_2(
                  zz_pX & p00,
                  zz_pX & p01,
                  zz_pX & p10,
@@ -1578,17 +1816,10 @@ void pmbasis_2x1(
     long order1 = order>>1; // order of first call
     long order2 = order-order1; // order of second call
 
-    double t=0;
-    if (order>200000)
-        t=GetWallTime();
-    // first recursive call, with 'pmat' and 'shift'
-    pmbasis_2x1(p00,p01,p10,p11,trunc(f0,order1),trunc(f1,order1),order1,s0,s1,threshold);
-    if (order>200000)
-    {
-        t=GetWallTime()-t;
-        std::cout << order << " -- 1st rec call: " << t << std::endl;
-    }
 
+    // first recursive call, with 'pmat' and 'shift'
+    pmbasis_2x1_2(p00,p01,p10,p11,trunc(f0,order1),trunc(f1,order1),order1,s0,s1,threshold);
+  
     // (s0,s1) is now the shifted row degree of appbas,
     // which is the shift for second call
 
@@ -1606,8 +1837,7 @@ void pmbasis_2x1(
     //RightShift(r0, MulTrunc(p00, f0, order) + MulTrunc(p01, f1, order), order1);
     //RightShift(r1, MulTrunc(p10, f0, order) + MulTrunc(p11, f1, order), order1);
     ////version3:
-    if (order>200000)
-        t=GetWallTime();
+  
     Mat<zz_pX> res, tmp;
     Mat<zz_pX> appbas,appbas2;
     appbas.SetDims(2,2);
@@ -1616,26 +1846,16 @@ void pmbasis_2x1(
     appbas[1][0] = p10;
     appbas[1][1] = p11;
     tmp.SetDims(2,1);
-    tmp[0][0] = trunc(f0,order);
-    tmp[1][0] = trunc(f1,order);
-    RightShift(tmp, tmp, order1-deg(appbas));
+    tmp[0][0] = f0;
+    tmp[1][0] = f1;
+    RightShift(tmp, tmp, deg(appbas));
     middle_product_evaluate_FFT_new(res, appbas, tmp, deg(appbas), order2-1);
-    if (order>200000)
-    {
-        t=GetWallTime()-t;
-        std::cout << order << " -- residual: " << t << std::endl;
-    }
-
+  
     // second recursive call, with the 'residual' (r1,r2) and updated (s0,s1)
-    if (order>200000)
-        t=GetWallTime();
+   
     zz_pX q00,q01,q10,q11; // basis for second call
-    pmbasis_2x1(q00,q01,q10,q11,res[0][0],res[1][0],order2,s0,s1,threshold);
-    if (order>200000)
-    {
-        t=GetWallTime()-t;
-        std::cout << order << " -- 2nd rec call: " << t << std::endl;
-    }
+    pmbasis_2x1_2(q00,q01,q10,q11,res[0][0],res[1][0],order2,s0,s1,threshold);
+
 
     // second recursive call, with the 'residual' (r1,r2) and updated (s0,s1)
     //zz_pX q00,q01,q10,q11; // basis for second call
@@ -1648,8 +1868,7 @@ void pmbasis_2x1(
     //appbas[0][1] = p01;
     //appbas[1][0] = p10;
     //appbas[1][1] = p11;
-    if (order>200000)
-        t=GetWallTime();
+    
     appbas2.SetDims(2,2);
     appbas2[0][0] = q00;
     appbas2[0][1] = q01;
@@ -1660,12 +1879,275 @@ void pmbasis_2x1(
     p01 = appbas[0][1];
     p10 = appbas[1][0];
     p11 = appbas[1][1];
-    if (order>200000)
-    {
-        t=GetWallTime()-t;
-        std::cout << order << " -- multiply bases: " << t << std::endl;
-    }
+  
 }
+
+
+void pmbasis_gcd_2(
+                 Mat<zz_pX> &appbas,
+                 const Mat<zz_pX> & pmat,
+                 const long order,
+                 VecLong & shift
+                 )
+{
+    if (order <= 32) // TODO thresholds to be determined
+    {
+        appbas_iterative_2x1_2(appbas,pmat,order,shift);
+        return;
+    }
+
+    long order1 = order>>1; // order of first call
+    long order2 = order-order1; // order of second call
+    Mat<zz_pX> trunc_pmat;
+
+    trunc(trunc_pmat,pmat,order1);
+    pmbasis_gcd_2(appbas,trunc_pmat,order1,shift);
+    
+    // shift is now the shifted row degree of appbas,
+    // which is the shift for second call
+
+
+    RightShift(trunc_pmat, pmat, deg(appbas));
+
+    // residual = (appbas * pmat * X^-order1) mod X^order2
+    Mat<zz_pX> residual; // for the residual
+    middle_product_evaluate_FFT_direct(residual, appbas, trunc_pmat, deg(appbas), order2-1);
+
+    // second recursive call, with 'residual' and 'rdeg'
+    Mat<zz_pX> appbas2; // basis for second call
+    pmbasis_gcd_2(appbas2,residual,order2,shift);
+    
+    // final basis = appbas2 * appbas
+    
+    multiply(appbas,appbas2,appbas);
+}
+
+void pmbasis_gcd_3(
+                 Mat<zz_pX> &appbas,
+                 const Mat<zz_pX> & pmat,
+                 const long order,
+                 VecLong & shift
+                 )
+{
+    if (order <= 32) // TODO thresholds to be determined
+    {
+        appbas_iterative_2x1_2(appbas,pmat,order,shift);
+        return;
+    }
+
+    long order1 = order>>1; // order of first call
+    long order2 = order-order1; // order of second call
+    Mat<zz_pX> trunc_pmat;
+
+    trunc(trunc_pmat,pmat,order1);
+    pmbasis_gcd_3(appbas,trunc_pmat,order1,shift);
+    
+    // shift is now the shifted row degree of appbas,
+    // which is the shift for second call
+
+    // TODO remove once middle_product has been fixed? (currently that's why
+    // it's here)
+    // TODO require this for the input?
+    RightShift(trunc_pmat, pmat, deg(appbas));
+
+    // residual = (appbas * pmat * X^-order1) mod X^order2
+    Mat<zz_pX> residual; // for the residual
+    middle_product_evaluate_FFT_new(residual, appbas, trunc_pmat, deg(appbas), order2-1);
+
+    // second recursive call, with 'residual' and 'rdeg'
+    Mat<zz_pX> appbas2; // basis for second call
+    pmbasis_gcd_3(appbas2,residual,order2,shift);
+    
+    // final basis = appbas2 * appbas
+    
+    multiply_waksman(appbas,appbas2,appbas);
+}
+
+
+void pmbasis_gcd_general_naive(
+                 zz_pX & p00,
+                 zz_pX & p01,
+                 zz_pX & p10,
+                 zz_pX & p11,
+                 const zz_pX & f0,
+                 const zz_pX & f1,
+                 long order,
+                 long & s0,
+                 long & s1,
+                 long threshold
+                )
+{
+    if (order <= threshold) // TODO thresholds to be determined
+    {
+        appbas_iterative_2x1(p00,p01,p10,p11,f0,f1,order,s0,s1);
+        return;
+    }
+
+    long order1 = order>>1; // order of first call
+    long order2 = order-order1; // order of second call
+
+
+    // first recursive call, with 'pmat' and 'shift'
+    pmbasis_gcd_general_naive(p00,p01,p10,p11,trunc(f0,order1),trunc(f1,order1),order1,s0,s1,threshold);
+  
+    // (s0,s1) is now the shifted row degree of appbas,
+    // which is the shift for second call
+
+    zz_pX tmp,r0,r1;
+    mul(r0, p00, f0);
+    mul(r1,p01,f1);
+    add(r0,r0,r1);
+    mul(r0, p10, f0);
+    mul(r1,p11,f1);
+    add(r1,r1,tmp); 
+   
+    zz_pX q00,q01,q10,q11, tmp2; // basis for second call
+    pmbasis_gcd_general_naive(q00,q01,q10,q11,r0,r1,order2,s0,s1,threshold);
+
+
+    // second recursive call, with the 'residual' (r1,r2) and updated (s0,s1)
+    mul(tmp, p00, q00);
+    mul(tmp2, p00, q01);
+    mul(p00, p01, q10 );
+    add(p00, p00, tmp);
+
+    mul(p01, p01, q11);
+    add(p01, p01, tmp2);
+
+    mul(tmp, p10, q00);
+    mul(tmp2, p10, q01);
+    mul(p10, p11, q10 );
+    add(p10, p10, tmp);
+
+    mul(p11, p11, q11);
+    add(p11, p11, tmp2);  
+}
+
+
+void pmbasis_gcd_general_middleprod(
+                 zz_pX & p00,
+                 zz_pX & p01,
+                 zz_pX & p10,
+                 zz_pX & p11,
+                 const zz_pX & f0,
+                 const zz_pX & f1,
+                 long order,
+                 long & s0,
+                 long & s1,
+                 long threshold
+                )
+{
+    if (order <= threshold) // TODO thresholds to be determined
+    {
+        appbas_iterative_2x1(p00,p01,p10,p11,f0,f1,order,s0,s1);
+        return;
+    }
+
+    long order1 = order>>1; // order of first call
+    long order2 = order-order1; // order of second call
+
+
+    // first recursive call, with 'pmat' and 'shift'
+     pmbasis_gcd_general_middleprod(p00,p01,p10,p11,trunc(f0,order1),
+                                    trunc(f1,order1),order1,s0,s1,threshold);
+  
+    // (s0,s1) is now the shifted row degree of appbas,
+    // which is the shift for second call
+
+    zz_pX tmp,r0,r1;
+    middle_product(r0,p00,f0,order1,order2-1);
+    middle_product(r1,p01,f1,order1,order2-1); // using r1 as temporary
+    add(r0,r0,r1);
+    middle_product(r1,p10,f0,order1,order2-1);
+    middle_product(tmp,p11,f1,order1,order2-1); // using tf0 as temporary
+    add(r1,r1,tmp);
+  
+  
+   
+    zz_pX q00,q01,q10,q11, tmp2; // basis for second call
+    pmbasis_gcd_general_middleprod(q00,q01,q10,q11,r0,r1,order2,s0,s1,threshold);
+
+
+    // second recursive call, with the 'residual' (r1,r2) and updated (s0,s1)
+    mul(tmp, p00, q00);
+    mul(tmp2, p00, q01);
+    mul(p00, p01, q10 );
+    add(p00, p00, tmp);
+
+    mul(p01, p01, q11);
+    add(p01, p01, tmp2);
+
+    mul(tmp, p10, q00);
+    mul(tmp2, p10, q01);
+    mul(p10, p11, q10 );
+    add(p10, p10, tmp);
+
+    mul(p11, p11, q11);
+    add(p11, p11, tmp2);  
+}
+
+
+void pmbasis_gcd_generic_middleprod(
+                 zz_pX & p00,
+                 zz_pX & p01,
+                 zz_pX & p10,
+                 zz_pX & p11,
+                 const zz_pX & f0,
+                 const zz_pX & f1,
+                 long order,
+                 long & s0,
+                 long & s1,
+                 long threshold
+                )
+{
+    if (order <= threshold) // TODO thresholds to be determined
+    {
+        appbas_iterative_2x1(p00,p01,p10,p11,f0,f1,order,s0,s1);
+        return;
+    }
+
+    long order1 = order>>1; // order of first call
+    long order2 = order-order1; // order of second call
+
+    
+    // first recursive call, with 'pmat' and 'shift'
+    pmbasis_gcd_generic_middleprod(p00,p01,p10,p11,trunc(f0,order1),
+                                   trunc(f1,order1),order1,s0,s1,threshold);
+    // (s0,s1) is now the shifted row degree of appbas,
+    // which is the shift for second call
+    
+    zz_pX tmp,r0,r1;
+    middle_product(r0,p00,f0,order1 >> 1,order2-1);
+    middle_product(r1,p01,f1,order1 >> 1,order2-1); // using r1 as temporary
+    add(r0,r0,r1);
+    middle_product(r1,p10,f0,order1 >> 1,order2-1);
+    middle_product(tmp,p11,f1,order1 >> 1,order2-1); // using tf0 as temporary
+    add(r1,r1,tmp);
+  
+  
+   
+    zz_pX q00,q01,q10,q11, tmp2; // basis for second call
+    pmbasis_gcd_generic_middleprod(q00,q01,q10,q11,r0,r1,order2,s0,s1,threshold);
+
+
+    // second recursive call, with the 'residual' (r1,r2) and updated (s0,s1)
+    mul(tmp, p00, q00);
+    mul(tmp2, p00, q01);
+    mul(p00, p01, q10 );
+    add(p00, p00, tmp);
+
+    mul(p01, p01, q11);
+    add(p01, p01, tmp2);
+
+    mul(tmp, p10, q00);
+    mul(tmp2, p10, q01);
+    mul(p10, p11, q10);
+    add(p10, p10, tmp);
+
+    mul(p11, p11, q11);
+    add(p11, p11, tmp2);  
+}
+
 
 // Local Variables:
 // mode: C++

@@ -232,6 +232,15 @@ void appbas_iterative_2x1(
                            long & s1
                           );
 
+
+void appbas_iterative_2x1_2(
+                          Mat<zz_pX> &appbas,
+                          const Mat<zz_pX> & pmat,
+                          const long order,
+                          VecLong & shift
+                            );
+
+
 /** Computes a `shift`-Popov approximant basis for `(pmat,order)`. At the end
  * of the computation, the vector `shift` contains the shifted row degree of
  * `appbas`, for the input shift. The parameter `order_wise` allows one to
@@ -531,9 +540,89 @@ void pmbasis_2x1(
                  long order,
                  long & s0,
                  long & s1,
+                 long alg,
                  long threshold=32
-                );
+                 );
 
+
+/// Kevin's tests implem gcd  ///
+
+void pmbasis_gcd(
+                 Mat<zz_pX> &appbas,
+                 const Mat<zz_pX> & pmat,
+                 const long order,
+                 VecLong & shift,
+                 long alg
+                 );
+
+void pmbasis_gcd_general_naive(
+                 zz_pX & p00,
+                 zz_pX & p01,
+                 zz_pX & p10,
+                 zz_pX & p11,
+                 const zz_pX & f0,
+                 const zz_pX & f1,
+                 long order,
+                 long & s0,
+                 long & s1,
+                 long threshold = 32
+                               );
+
+void pmbasis_gcd_general_middleprod(
+                                    zz_pX & p00,
+                                    zz_pX & p01,
+                                    zz_pX & p10,
+                                    zz_pX & p11,
+                                    const zz_pX & f0,
+                                    const zz_pX & f1,
+                                    long order,
+                                    long & s0,
+                                    long & s1,
+                                    long threshold = 32
+                                    );
+
+
+void pmbasis_gcd_generic_middleprod(
+                                    zz_pX & p00,
+                                    zz_pX & p01,
+                                    zz_pX & p10,
+                                    zz_pX & p11,
+                                    const zz_pX & f0,
+                                    const zz_pX & f1,
+                                    long order,
+                                    long & s0,
+                                    long & s1,
+                                    long threshold = 32
+                                    );
+
+
+void pmbasis_2x1_2(
+                   zz_pX & p00,
+                   zz_pX & p01,
+                   zz_pX & p10,
+                   zz_pX & p11,
+                   const zz_pX & f0,
+                   const zz_pX & f1,
+                   long order,
+                   long & s0,
+                   long & s1,
+                   long threshold = 32
+                   );
+
+
+void pmbasis_gcd_2(
+                   Mat<zz_pX> &appbas,
+                   const Mat<zz_pX> & pmat,
+                   const long order,
+                   VecLong & shift
+                   );
+
+void pmbasis_gcd_3(
+                   Mat<zz_pX> &appbas,
+                   const Mat<zz_pX> & pmat,
+                   const long order,
+                   VecLong & shift
+                   );
 //@} // doxygen group: PM-Basis algorithm (uniform approximant order)
 
 

@@ -50,7 +50,7 @@ void check(long p, long sz, long sz2, long sz3, long deg)
     nb = 0;
     do
     {
-        multiply_evaluate(c, a, b);
+        multiply_evaluate_FFT(c, a, b);
         nb++;
     }
     while ((get_time()-t_eval) <= thresh);
