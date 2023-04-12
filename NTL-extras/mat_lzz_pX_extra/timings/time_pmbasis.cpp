@@ -29,8 +29,8 @@ void one_bench_pmbasis(long rdim, long cdim, long degree)
     // double t_pmbasis_gen_middle=-1.0;
 
     double t_pmbasis_2x1_2=-1.0;
-    //double t_pmbasis_generic_middle=-1.0;
-
+    double t_pmbasis_generic_middle=-1.0;
+    
     
     double t_gcd_ntl = -1.0;
     zz_pX f0,f1;
@@ -44,53 +44,44 @@ void one_bench_pmbasis(long rdim, long cdim, long degree)
 
     long order;
     cout.precision(3);
-    
+    VecLong degree_p = {1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000, 200000000, 300000000};
+
     if (rdim==2 && cdim==1)
         {
-            t_pmbasis2x1=0.0;
-            t_pmbasisgcd=0.0;
-            random(f0, degree+1);
-            random(f1, degree);
-            pmat[0][0] = f0;
-            pmat[1][0] = f1;
-            order = deg(f0) + deg(f1) + 1;
-                    
-            s0 = shift[0];
-            s1 = shift[1];
-
-            // Vincent's
-            for (int j = 0; j < 9; j++)
-                cout << "\t2x1" << j;
-            cout<<endl;
-                    
-            for (int j = 0; j < 9; j++)
+            for (int k = 0; k < degree_p.size(); k++)
                 {
-                    t1 = GetWallTime();
-                    pmbasis_2x1(p00,p01,p10,p11,f0,f1,order,s0,s1, j, 100);
-                    t2 = GetWallTime();
-                    t_pmbasis2x1 = t2-t1;
-                    cout << "\t" << t_pmbasis2x1;    
-                }
-
-            cout<<endl;
-            for (int j = 0; j < 9; j++)
-                cout << "\tgcd" << j;
-            cout << endl;
-            // Kevin's
-            for (int j = 0; j < 9; j++)
-                {
-                    t1 = GetWallTime();
-                    pmbasis_gcd(appbas, pmat, order, shift, j);
-                    t2 = GetWallTime();
-                    t_pmbasisgcd = t2-t1;
-                    cout << "\t" << t_pmbasisgcd;
-                }
-            cout<<endl;
-            //t1 = GetWallTime();
+                    for (int i = 0; i < 3; i ++)
+                        {
+                            t_pmbasis2x1=0.0;
+                            t_pmbasisgcd=0.0;
+                            random(f0, degree_p[k]);
+                            random(f1, degree_p[k] - 1);
+                            pmat[0][0] = f0;
+                            pmat[1][0] = f1;
+                            order = deg(f0) + deg(f1) + 1;
+                            
+                            s0 = shift[0];
+                            s1 = shift[1];
+                            
+                            // Vincent's
+                                                       
+                            t1 = GetWallTime();
+                            pmbasis_2x1(p00,p01,p10,p11,f0,f1,order,s0,s1, 100);
+                            t2 = GetWallTime();
+                            t_pmbasis2x1 = t2-t1;
+                            
+                            // Kevin's
+                            
+                            t1 = GetWallTime();
+                            pmbasis_gcd(appbas, pmat, order, shift);
+                            t2 = GetWallTime();
+                            t_pmbasisgcd = t2-t1;
+                            
+                            //t1 = GetWallTime();
             //pmbasis_2x1_2(p00,p01,p10,p11,f0,f1,order,s0,s1, 200);
             //t2 = GetWallTime();
             //t_pmbasis_2x1_2 = t2-t1;
-
+                            
             //t1 = GetWallTime();
             //pmbasis_gcd_2(appbas, pmat, order, shift);
             //t2 = GetWallTime();
@@ -110,25 +101,25 @@ void one_bench_pmbasis(long rdim, long cdim, long degree)
             //t_pmbasis_gen_middle = t2-t1;
 
                     
-            //t1 = GetWallTime();
-            //pmbasis_gcd_generic_middleprod(p00,p01,p10,p11,f0,f1,order,s0,s1);
-            //t2 = GetWallTime();
-            //t_pmbasis_generic_middle = t2-t1;
-
-
-            // NTL's
-            t1 = GetWallTime();
-            GCD(f0, f0, f1);
-            t2 = GetWallTime();
-            t_gcd_ntl = t2-t1;
-
-
-            //cout << "\t"<< t_pmbasis_gen_naive << "\t"<< t_pmbasis_gen_middle <<"\t"<< t_pmbasis_generic_middle;
-            cout << "gcd ntl" << endl;
-            cout << t_gcd_ntl<<endl;
-                
-        }   
-    cout << endl;
+                    t1 = GetWallTime();
+                    pmbasis_gcd_generic_middleprod(p00,p01,p10,p11,f0,f1,order,s0,s1,100);
+                    t2 = GetWallTime();
+                    t_pmbasis_generic_middle = t2-t1;
+                    
+                    
+                    // NTL's
+                    t1 = GetWallTime();
+                    GCD(f0, f0, f1);
+                    t2 = GetWallTime();
+                    t_gcd_ntl = t2-t1;
+                    
+                    
+                    //cout << "\t"<< t_pmbasis_gen_naive << "\t"<< t_pmbasis_gen_middle <<"\t"<< t_pmbasis_generic_middle;
+                    cout << rdim << "\t" << cdim << "\t" << degree_p[k] << "\t" << order << "\t"; 
+                    cout << t_pmbasis2x1 << "\t" << t_pmbasisgcd << "\t" << t_pmbasis_generic_middle << "\t" << t_gcd_ntl << "\t" <<  t_pmbasis2x1/t_gcd_ntl <<"\t" <<  t_pmbasisgcd/t_gcd_ntl <<"\t" <<  t_pmbasis_generic_middle/t_gcd_ntl  <<endl;
+                        }
+                }
+        }
 }
 
 void multiplication(){
@@ -286,7 +277,7 @@ void run_bench(long nthreads, long nbits, bool fftprime, long rdim=-1, long cdim
     }
 
     std::cout << "Note: negative timings for interpolant variants indicate that not enough interpolation points could be found in the base field." << std::endl;
-    cout << "rdim\tcdim\tdeg\torder" << endl;
+    cout << "rdim\tcdim\tdeg\torder\tpmbasis2x1\tpmbasisgcd\tpmbasisgeneric\tgcdntl\t2x1/ntl\tgcd/ntl\tgeneric/ntl" << endl;
     
     if (rdim==-1) // then cdim==-1 && order==-1, default case
     {

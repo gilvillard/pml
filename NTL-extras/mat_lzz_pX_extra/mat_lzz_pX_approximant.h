@@ -540,7 +540,6 @@ void pmbasis_2x1(
                  long order,
                  long & s0,
                  long & s1,
-                 long alg,
                  long threshold=32
                  );
 
@@ -551,8 +550,7 @@ void pmbasis_gcd(
                  Mat<zz_pX> &appbas,
                  const Mat<zz_pX> & pmat,
                  const long order,
-                 VecLong & shift,
-                 long alg
+                 VecLong & shift
                  );
 
 void pmbasis_gcd_general_naive(

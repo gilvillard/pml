@@ -1612,7 +1612,6 @@ void pmbasis_2x1(
                  long order,
                  long & s0,
                  long & s1,
-                 long alg,
                  long threshold                 
                  )
 {
@@ -1627,7 +1626,7 @@ void pmbasis_2x1(
 
 
     // first recursive call, with 'pmat' and 'shift'
-    pmbasis_2x1(p00,p01,p10,p11,trunc(f0,order1),trunc(f1,order1),order1,s0,s1,alg,threshold);
+    pmbasis_2x1(p00,p01,p10,p11,trunc(f0,order1),trunc(f1,order1),order1,s0,s1,threshold);
   
     // (s0,s1) is now the shifted row degree of appbas,
     // which is the shift for second call
@@ -1659,43 +1658,13 @@ void pmbasis_2x1(
     tmp[1][0] = f1;
     RightShift(tmp, tmp, order1-deg(appbas));
 
-      switch(alg)
-        {
-        case 0:
-            middle_product_evaluate_FFT_new(res, appbas, tmp, deg(appbas), order2 + deg(appbas));
-            break;
-            
-        case 1:
-            middle_product_evaluate_FFT_direct_ll_type(res, appbas, tmp, deg(appbas), order2 + deg(appbas));
-            break;
-            
-        case 2:
-            middle_product_evaluate_FFT_direct(res, appbas, tmp, deg(appbas), order2 + deg(appbas));
-            break;
-        case 3:
-            middle_product_evaluate_FFT_matmul(res, appbas, tmp, deg(appbas), order2 + deg(appbas));
-            break;
-        case 4:
-            middle_product_evaluate_FFT_matmul1(res, appbas, tmp, deg(appbas), order2 + deg(appbas));
-            break;
-        case 5:
-            middle_product_evaluate_FFT_matmul2(res, appbas, tmp, deg(appbas), order2 + deg(appbas));
-            break;
-        case 6:
-            middle_product_evaluate_FFT(res, appbas, tmp, deg(appbas), order2 + deg(appbas));
-            break;
-        case 7:
-            middle_product_naive(res, appbas, tmp, deg(appbas), order2 + deg(appbas));
-            break;
-        case 8:
-            middle_product(res, appbas, tmp, deg(appbas), order2 + deg(appbas));
-        }
-
+    middle_product_evaluate_FFT(res, appbas, tmp, deg(appbas), order2 + deg(appbas));
+          
     
     // second recursive call, with the 'residual' (r1,r2) and updated (s0,s1)
    
     zz_pX q00,q01,q10,q11; // basis for second call
-    pmbasis_2x1(q00,q01,q10,q11,res[0][0],res[1][0],order2,s0,s1,alg,threshold);
+    pmbasis_2x1(q00,q01,q10,q11,res[0][0],res[1][0],order2,s0,s1,threshold);
 
 
     // second recursive call, with the 'residual' (r1,r2) and updated (s0,s1)
@@ -1731,8 +1700,7 @@ void pmbasis_gcd(
                  Mat<zz_pX> &appbas,
                  const Mat<zz_pX> & pmat,
                  const long order,
-                 VecLong & shift,
-                 long alg
+                 VecLong & shift
                  )
 {
     if (order <= 32) // TODO thresholds to be determined
@@ -1744,7 +1712,7 @@ void pmbasis_gcd(
     long order1 = order>>1; // order of first call
     long order2 = order-order1; // order of second call
 
-    pmbasis_gcd(appbas,pmat,order1,shift, alg);
+    pmbasis_gcd(appbas,pmat,order1,shift);
     
     // shift is now the shifted row degree of appbas,
     // which is the shift for second call
@@ -1753,41 +1721,13 @@ void pmbasis_gcd(
     Mat<zz_pX> residual,truncpmat; // for the residual
     RightShift(truncpmat,pmat, order1-deg(appbas));
 
-    switch(alg)
-        {
-        case 0:
-            middle_product_evaluate_FFT_new(residual, appbas, truncpmat, deg(appbas), order2 + deg(appbas));
-            break;
-            
-        case 1:
-            middle_product_evaluate_FFT_direct_ll_type(residual, appbas, truncpmat, deg(appbas), order2 + deg(appbas));
-            break;
-            
-        case 2:
-            middle_product_evaluate_FFT_direct(residual, appbas, truncpmat, deg(appbas), order2 + deg(appbas));
-            break;
-        case 3:
-            middle_product_evaluate_FFT_matmul(residual, appbas, truncpmat, deg(appbas), order2 + deg(appbas));
-            break;
-        case 4:
-            middle_product_evaluate_FFT_matmul1(residual, appbas, truncpmat, deg(appbas), order2 + deg(appbas));
-            break;
-        case 5:
-            middle_product_evaluate_FFT_matmul2(residual, appbas, truncpmat, deg(appbas), order2 + deg(appbas));
-            break;
-        case 6:
-            middle_product_evaluate_FFT(residual, appbas, truncpmat, deg(appbas), order2 + deg(appbas));
-            break;
-        case 7:
-            middle_product_naive(residual, appbas, truncpmat, deg(appbas), order2 + deg(appbas));
-            break;
-        case 8:
-            middle_product(residual, appbas, truncpmat, deg(appbas), order2 + deg(appbas));
-        }
+   
+    middle_product_evaluate_FFT(residual, appbas, truncpmat, deg(appbas), order2 + deg(appbas));
+   
 
     // second recursive call, with 'residual' and 'rdeg'
     Mat<zz_pX> appbas2; // basis for second call
-    pmbasis_gcd(appbas2,residual,order2,shift, alg);
+    pmbasis_gcd(appbas2,residual,order2,shift);
     
     // final basis = appbas2 * appbas
     
@@ -2116,19 +2056,17 @@ void pmbasis_gcd_generic_middleprod(
     // (s0,s1) is now the shifted row degree of appbas,
     // which is the shift for second call
     
-    zz_pX tmp,r0,r1;
-    middle_product(r0,p00,f0,order1 >> 1,order2-1);
-    middle_product(r1,p01,f1,order1 >> 1,order2-1); // using r1 as temporary
+    zz_pX tmp,r0,r1;      
+
+    middle_product(r0,p00,RightShift(f0,order1 - deg(p00)), deg(p00), order2 + deg(p00));
+    middle_product(r1,p01,RightShift(f1,order1 - deg(p01)), deg(p01), order2 + deg(p01)); 
     add(r0,r0,r1);
-    middle_product(r1,p10,f0,order1 >> 1,order2-1);
-    middle_product(tmp,p11,f1,order1 >> 1,order2-1); // using tf0 as temporary
+    middle_product(r1,p10,RightShift(f0,order1 - deg(p10)), deg(p10), order2 + deg(p10));
+    middle_product(tmp,p11,RightShift(f1,order1 - deg(p11)), deg(p11), order2 + deg(p11)); 
     add(r1,r1,tmp);
   
-  
-   
     zz_pX q00,q01,q10,q11, tmp2; // basis for second call
     pmbasis_gcd_generic_middleprod(q00,q01,q10,q11,r0,r1,order2,s0,s1,threshold);
-
 
     // second recursive call, with the 'residual' (r1,r2) and updated (s0,s1)
     mul(tmp, p00, q00);
@@ -2145,7 +2083,7 @@ void pmbasis_gcd_generic_middleprod(
     add(p10, p10, tmp);
 
     mul(p11, p11, q11);
-    add(p11, p11, tmp2);  
+    add(p11, p11, tmp2); 
 }
 
 
