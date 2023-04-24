@@ -33,7 +33,9 @@ void one_bench_pmbasis(long rdim, long cdim, long degree)
     
     
     double t_gcd_ntl = -1.0;
-    zz_pX f0,f1;
+    double t_xgcd_ntl = -1.0;
+
+    zz_pX f0,f1,d, s,t;
     zz_pX p00,p01,p10,p11;
     long s0,s1;
     Mat<zz_pX> pmat;
@@ -44,16 +46,14 @@ void one_bench_pmbasis(long rdim, long cdim, long degree)
 
     long order;
     cout.precision(3);
-    VecLong degree_p = {1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000, 200000000, 300000000};
+    VecLong degree_p = {100, 300, 600, 900, 1000, 3000, 5000, 8000, 10000, 12000, 20000, 40000, 80000, 100000, 400000, 800000,  1000000, 3000000, 8000000, 10000000};
 
     if (rdim==2 && cdim==1)
         {
             for (int k = 0; k < degree_p.size(); k++)
                 {
-                    for (int i = 0; i < 3; i ++)
-                        {
-                            t_pmbasis2x1=0.0;
-                            t_pmbasisgcd=0.0;
+                    t_pmbasis2x1=0.0;
+                    t_pmbasisgcd=0.0;
                             random(f0, degree_p[k]);
                             random(f1, degree_p[k] - 1);
                             pmat[0][0] = f0;
@@ -86,12 +86,12 @@ void one_bench_pmbasis(long rdim, long cdim, long degree)
             //pmbasis_gcd_2(appbas, pmat, order, shift);
             //t2 = GetWallTime();
             //t_pmbasisgcd_2 = t2-t1;
+                            t1 = GetWallTime();
+                            pmbasis_gcd_3(appbas, pmat, order, shift);
+                            t2 = GetWallTime();
+                            t_pmbasisgcd_3 = t2-t1;
             //t1 = GetWallTime();
-            //pmbasis_gcd_3(appbas, pmat, order, shift);
-            //t2 = GetWallTime();
-            //t_pmbasisgcd_3 = t2-t1;
-            //   t1 = GetWallTime();
-            // pmbasis_gcd_general_naive(p00,p01,p10,p11,f0,f1,order,s0,s1);
+               //pmbasis_gcd_general_naive(p00,p01,p10,p11,f0,f1,order,s0,s1);
             /// t2 = GetWallTime();
             // t_pmbasis_gen_naive = t2-t1;
 
@@ -102,22 +102,29 @@ void one_bench_pmbasis(long rdim, long cdim, long degree)
 
                     
                     t1 = GetWallTime();
-                    pmbasis_gcd_generic_middleprod(p00,p01,p10,p11,f0,f1,order,s0,s1,100);
+                    pmbasis_gcd_generic_middleprod(p00,p01,p10,p11,f0,f1,order,s0,s1, 100);
                     t2 = GetWallTime();
                     t_pmbasis_generic_middle = t2-t1;
                     
                     
                     // NTL's
                     t1 = GetWallTime();
-                    GCD(f0, f0, f1);
+                    GCD(d, f0, f1);
                     t2 = GetWallTime();
                     t_gcd_ntl = t2-t1;
                     
-                    
+
+                    t1 = GetWallTime();
+                    XGCD(d, s,t, f0, f1);
+                    t2 = GetWallTime();
+                    t_xgcd_ntl = t2-t1;
+
+
+
                     //cout << "\t"<< t_pmbasis_gen_naive << "\t"<< t_pmbasis_gen_middle <<"\t"<< t_pmbasis_generic_middle;
                     cout << rdim << "\t" << cdim << "\t" << degree_p[k] << "\t" << order << "\t"; 
-                    cout << t_pmbasis2x1 << "\t" << t_pmbasisgcd << "\t" << t_pmbasis_generic_middle << "\t" << t_gcd_ntl << "\t" <<  t_pmbasis2x1/t_gcd_ntl <<"\t" <<  t_pmbasisgcd/t_gcd_ntl <<"\t" <<  t_pmbasis_generic_middle/t_gcd_ntl  <<endl;
-                        }
+                    cout << t_pmbasis2x1 << "\t\t" << t_pmbasisgcd << "\t\t" << t_pmbasisgcd_3 << "\t\t" << t_pmbasis_generic_middle << "\t\t" << t_gcd_ntl << "\t\t" << t_xgcd_ntl<<"\t\t" <<  t_pmbasis2x1/t_gcd_ntl <<"\t\t" <<  t_pmbasisgcd/t_gcd_ntl <<"\t\t" <<  t_pmbasis_generic_middle/t_gcd_ntl <<endl;
+                    
                 }
         }
 }
@@ -277,7 +284,7 @@ void run_bench(long nthreads, long nbits, bool fftprime, long rdim=-1, long cdim
     }
 
     std::cout << "Note: negative timings for interpolant variants indicate that not enough interpolation points could be found in the base field." << std::endl;
-    cout << "rdim\tcdim\tdeg\torder\tpmbasis2x1\tpmbasisgcd\tpmbasisgeneric\tgcdntl\t2x1/ntl\tgcd/ntl\tgeneric/ntl" << endl;
+    cout << "rdim\tcdim\tdeg\torder\tpmbasis2x1\tpmbasisgcd\tpmbasisgeneric\tgcdntl\t2x1/ntl\t\tgcd/ntl\t\tgeneric/ntl" << endl;
     
     if (rdim==-1) // then cdim==-1 && order==-1, default case
     {

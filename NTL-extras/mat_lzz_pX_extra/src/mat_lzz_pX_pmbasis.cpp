@@ -1658,7 +1658,7 @@ void pmbasis_2x1(
     tmp[1][0] = f1;
     RightShift(tmp, tmp, order1-deg(appbas));
 
-    middle_product_evaluate_FFT(res, appbas, tmp, deg(appbas), order2 + deg(appbas));
+    middle_product_evaluate_FFT(res, appbas, tmp, deg(appbas), order2);
           
     
     // second recursive call, with the 'residual' (r1,r2) and updated (s0,s1)
@@ -1722,7 +1722,7 @@ void pmbasis_gcd(
     RightShift(truncpmat,pmat, order1-deg(appbas));
 
    
-    middle_product_evaluate_FFT(residual, appbas, truncpmat, deg(appbas), order2 + deg(appbas));
+    middle_product_evaluate_FFT(residual, appbas, truncpmat, deg(appbas), order2);
    
 
     // second recursive call, with 'residual' and 'rdeg'
@@ -1869,7 +1869,7 @@ void pmbasis_gcd_3(
                  VecLong & shift
                  )
 {
-    if (order <= 32) // TODO thresholds to be determined
+    if (order <= 100) // TODO thresholds to be determined
     {
         appbas_iterative_2x1_2(appbas,pmat,order,shift);
         return;
@@ -1888,11 +1888,12 @@ void pmbasis_gcd_3(
     // TODO remove once middle_product has been fixed? (currently that's why
     // it's here)
     // TODO require this for the input?
-    RightShift(trunc_pmat, pmat, deg(appbas));
+    Mat<zz_pX> residual,truncpmat; // for the residual                                                                                                                                                      
+    RightShift(truncpmat,pmat, order1-deg(appbas));
 
-    // residual = (appbas * pmat * X^-order1) mod X^order2
-    Mat<zz_pX> residual; // for the residual
-    middle_product_evaluate_FFT_new(residual, appbas, trunc_pmat, deg(appbas), order2-1);
+
+    middle_product_evaluate_FFT(residual, appbas, truncpmat, deg(appbas), order2);
+   
 
     // second recursive call, with 'residual' and 'rdeg'
     Mat<zz_pX> appbas2; // basis for second call
@@ -2058,11 +2059,11 @@ void pmbasis_gcd_generic_middleprod(
     
     zz_pX tmp,r0,r1;      
 
-    middle_product(r0,p00,RightShift(f0,order1 - deg(p00)), deg(p00), order2 + deg(p00));
-    middle_product(r1,p01,RightShift(f1,order1 - deg(p01)), deg(p01), order2 + deg(p01)); 
+    middle_product(r0,p00,RightShift(f0,order1 - deg(p00)), deg(p00), order2);
+    middle_product(r1,p01,RightShift(f1,order1 - deg(p01)), deg(p01), order2); 
     add(r0,r0,r1);
-    middle_product(r1,p10,RightShift(f0,order1 - deg(p10)), deg(p10), order2 + deg(p10));
-    middle_product(tmp,p11,RightShift(f1,order1 - deg(p11)), deg(p11), order2 + deg(p11)); 
+    middle_product(r1,p10,RightShift(f0,order1 - deg(p10)), deg(p10), order2);
+    middle_product(tmp,p11,RightShift(f1,order1 - deg(p11)), deg(p11), order2); 
     add(r1,r1,tmp);
   
     zz_pX q00,q01,q10,q11, tmp2; // basis for second call
