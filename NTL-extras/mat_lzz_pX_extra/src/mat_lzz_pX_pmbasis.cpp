@@ -1660,6 +1660,10 @@ void pmbasis_2x1(
     p01 = appbas[0][1];
     p10 = appbas[1][0];
     p11 = appbas[1][1];
+    appbas.kill();
+    appbas2.kill();
+    tmp.kill();
+    res.kill();
     if (order>200000)
     {
         t=GetWallTime()-t;
