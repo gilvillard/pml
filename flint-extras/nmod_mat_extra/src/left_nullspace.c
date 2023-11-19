@@ -1,10 +1,11 @@
 #include "nmod_mat_extra.h"
+#include <stdlib.h>
 #include <flint/perm.h>
 
 slong nmod_mat_left_nullspace(nmod_mat_t X, const nmod_mat_t A)
 {
     // helper lists of nonpivot|pivot columns of X
-    slong * permutation = malloc(A->r * sizeof(slong));
+    slong * permutation = flint_malloc(A->r * sizeof(slong));
 
     // compute compact form of left nullspace
     nmod_mat_t Y;
@@ -20,7 +21,7 @@ slong nmod_mat_left_nullspace(nmod_mat_t X, const nmod_mat_t A)
             nmod_mat_entry(X, i, permutation[j]) = nmod_mat_entry(Y, i, j);
 
     nmod_mat_clear(Y);
-    free(permutation);
+    flint_free(permutation);
 
     return nullity;
 }
