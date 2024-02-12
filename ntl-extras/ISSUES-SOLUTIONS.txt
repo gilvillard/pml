@@ -1,3 +1,12 @@
+Apple clang version 15.0.0 (clang-1500.0.40.1)
+Target: arm64-apple-darwin22.6.0
+============================================================
+
+
+
+
+
+===============================
 
 Lun 12 fév 2024 15:23:31 CET
 
@@ -26,4 +35,9 @@ lzz_pX_middle_product > test_middle_product.cpp:53:17: error: use of undeclared 
 
 structured_lzz_p   test_mosaic_hankel_to_cauchy_grp.cpp:87:9: error: use of undeclared identifier 'to_cauchy_grp'
 
+===================================
 
+
+NTL::set
+
+Update Makefiles 
