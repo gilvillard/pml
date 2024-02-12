@@ -72,3 +72,7 @@ ntl-extras/mat_lzz_pX_extra/test/test_linsolve_series
 ntl-extras/mat_lzz_pX_extra/test/test_mbasisgen
 ntl-extras/mat_lzz_pX_extra/test/test_middle_product
 ntl-extras/mat_lzz_pX_extra/test/test_modcomp
+ntl-extras/mat_lzz_pX_extra/test/test_random
+ntl-extras/mat_lzz_pX_extra/test/test_reduction
+ntl-extras/mat_lzz_pX_extra/test/test_utils
+ntl-extras/mat_lzz_pX_extra/test/test_vs_gcd

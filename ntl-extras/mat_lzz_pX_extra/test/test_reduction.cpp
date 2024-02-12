@@ -40,7 +40,7 @@ int main()
             random(trans, dim, dim, d);
             for (long i = 0; i < dim; ++i)
             {
-                set(trans[i][i]);
+                NTL::set(trans[i][i]);
                 for (long j = i+1; j < dim; ++j)
                     clear(trans[i][j]);
             }
@@ -50,7 +50,7 @@ int main()
             random(trans2, dim, dim, d);
             for (long i = 0; i < dim; ++i)
             {
-                set(trans2[i][i]);
+                NTL::set(trans2[i][i]);
                 for (long j = 0; j < i; ++j)
                     clear(trans2[i][j]);
             }
