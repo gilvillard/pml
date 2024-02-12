@@ -518,7 +518,7 @@ void matrix_recon_interpolation(Mat<zz_pX> & basis,
     {
         seq[j].SetDims(2*m, m);
         for (long i = 0; i < m; ++i)
-            set(seq[j][m+i][i]);
+            NTL::set(seq[j][m+i][i]);
     }
 
     // call pmbasis
@@ -555,7 +555,7 @@ void matrix_recon_interpolation_geometric(Mat<zz_pX> & basis,
     {
         seq[j].SetDims(2*m, m);
         for (long i = 0; i < m; i++)
-            set(seq[j][m+i][i]);
+            NTL::set(seq[j][m+i][i]);
     }
 
     // call pmbasis

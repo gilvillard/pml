@@ -164,7 +164,7 @@ void zz_pX_Multipoint::interpolate_matrix(Mat<zz_pX>& f, const Vec<Mat<zz_p>>& v
 void zz_pX_Multipoint::to_dense(Mat<zz_p>& M)
 {
     zz_pX f;
-    set(f);
+    NTL::set(f);
     Vec<zz_p> v;
     v.SetLength(n);
     M.SetDims(n, n);

@@ -327,7 +327,7 @@ void linsolve_via_series(Vec<zz_pX> &u, zz_pX& den, const Mat<zz_pX>& A, const V
             }
             u[i].swap(buf1);
         }
-        set(den);
+        NTL::set(den);
         return;
     }
 

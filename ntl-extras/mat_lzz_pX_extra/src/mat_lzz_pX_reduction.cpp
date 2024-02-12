@@ -45,7 +45,7 @@ long reduced_form_gjv(
     // Reconstruction via approximants: add identity below series
     series.SetDims(2*dim, dim);
     for (long i = 0; i < dim; ++i)
-        set(series[dim+i][i]);
+        NTL::set(series[dim+i][i]);
 
     // Reconstruction
     Mat<zz_pX> appbas;
