@@ -8,12 +8,22 @@ mat_lzz_pX_extra/test
 
 	===> test_multiply.save   multiply_evaluate_FFT_matmul1_new ? 
 
+
+        ===> test_invmodcom.cpp 
+           ld: 4 duplicate symbols
+           clang: error: linker command failed with exit code 1 (use -v to see invocation)
+
+            Put (just for compiling for the moment) MulMod_local_b   gen_pows_b  mul_special_b  SetDims_b 
+
 ==================================
 
 lzz_pX_extra >   FFT vs CRT ?
+
 lzz_pX_CRT > test_geometric_vector_operations --> random(in,j);   
     et  89101 Segmentation fault: 11  ./test_bivariate_evaluation > test_bivariate_evaluation.chk
+
 lzz_pX_middle_product > test_middle_product.cpp:53:17: error: use of undeclared identifier 'middle_FFT_variant'
+
 structured_lzz_p   test_mosaic_hankel_to_cauchy_grp.cpp:87:9: error: use of undeclared identifier 'to_cauchy_grp'
 
 
