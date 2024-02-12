@@ -1,5 +1,9 @@
 Apple clang version 15.0.0 (clang-1500.0.40.1)
 Target: arm64-apple-darwin22.6.0
+
+-I/usr/local/include   
+LDFLAGS = -L/opt/homebrew/lib -L/usr/local/lib  
+uses $(LDFLAGS)
 ============================================================
 
 
