@@ -185,7 +185,7 @@ int main(int argc, char *argv[])
         // Matrix fraction reconstruction: add identity below pmat
         pmat.SetDims(2*m, m);
         for (long i = 0; i < m; ++i)
-            set(pmat[i+m][i]);
+            NTL::set(pmat[i+m][i]);
 
         t2 = GetWallTime();
         std::cout << "TIME ~~ convert sequence to polynomial matrix: " << (t2-t1) << std::endl;
