@@ -1,10 +1,26 @@
 
 Lun 12 fév 2024 15:23:31 CET
 
-lzz_pX_extra >   FFT vs CRT ?
-lzz_pX_CRT > test_geometric_vector_operations --> random(in,j);   
-    et  89101 Segmentation fault: 11  ./test_bivariate_evaluation > test_bivariate_evaluation.chk
-lzz_pX_middle_product > test_middle_product.cpp:53:17: error: use of undeclared identifier 'middle_FFT_variant'
-structured_lzz_p   test_mosaic_hankel_to_cauchy_grp.cpp:87:9: error: use of undeclared identifier 'to_cauchy_grp'
+mat_lzz_pX_extra/test
+
+       test_matrix_recon: no matching function for call to 'pmbasis' pmbasis(intbas, mat_eval2, pts, shift);
+          ===> test_matrix_recon.save 
+
+================================================
+
+lzz_pX_extra    
+      FFT vs CRT ?
+
+lzz_pX_CRT  
+      test_geometric_vector_operations --> random(in,j);   
+      et  89101 Segmentation fault: 11  ./test_bivariate_evaluation > test_bivariate_evaluation.chk
+
+lzz_pX_middle_product  
+      test_middle_product.cpp:53:17: error: use of undeclared identifier 'middle_FFT_variant'
+
+structured_lzz_p   
+      test_mosaic_hankel_to_cauchy_grp.cpp:87:9: error: use of undeclared identifier 'to_cauchy_grp'
+
+
 
 
