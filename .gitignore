@@ -66,3 +66,5 @@ ntl-extras/lzz_pX_seq/test/test_seq
 ntl-extras/lzz_pX_seq/test/test_seq_mod
 ntl-extras/magma_output/test/test_magma_output
 ntl-extras/magma_output/test/test_magma_output.chk
+ntl-extras/mat_lzz_pX_extra/test/test_lmultiplier
+ntl-extras/mat_lzz_pX_extra/test/test_matpadegen
