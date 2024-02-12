@@ -1,6 +1,15 @@
 
 Lun 12 fév 2024 15:23:31 CET
 
+
+mat_lzz_pX_extra/test
+
+	===> test_matrix_recon.save     correct call to pmbasis ? 
+
+	===> test_multiply.save   multiply_evaluate_FFT_matmul1_new ? 
+
+==================================
+
 lzz_pX_extra >   FFT vs CRT ?
 lzz_pX_CRT > test_geometric_vector_operations --> random(in,j);   
     et  89101 Segmentation fault: 11  ./test_bivariate_evaluation > test_bivariate_evaluation.chk
