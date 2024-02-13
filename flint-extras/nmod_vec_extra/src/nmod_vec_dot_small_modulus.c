@@ -61,8 +61,8 @@ mp_limb_t _nmod_vec_dot_small_modulus(mp_ptr a, mp_ptr b, ulong len,
     for (; k < len; k++)
         acc_last += (*as++) * (*bs++);
     
-    total_low = sum_low[0] + sum_low[1] + sum_low[2] + sum_low[3] + (acc_last & ((1L << 45) - 1));
-    total_high = sum_high[0] + sum_high[1] + sum_high[2] + sum_high[3] + (acc_last >> 45);
+    total_low = sum_low.e1[0] + sum_low.e1[1] + sum_low.e2[0] + sum_low.e2[1] + (acc_last & ((1L << 45) - 1));
+    total_high = sum_high.e1[0] + sum_high.e1[1] + sum_high.e2[0] + sum_high.e2[1] + (acc_last >> 45); // GV 
 
     sum = total_low + power_two * total_high;
     return (mp_limb_t) vec1d_reduce_to_0n(sum, p, pinv);
