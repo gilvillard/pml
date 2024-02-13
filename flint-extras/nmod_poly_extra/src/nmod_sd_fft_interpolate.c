@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <flint/fft_small.h>
 #include "nmod_poly_extra.h"
 #include "nmod_vec_extra.h"

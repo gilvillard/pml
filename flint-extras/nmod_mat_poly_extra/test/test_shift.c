@@ -1,3 +1,5 @@
+#include <stdlib.h>
+#include <time.h>
 #include <flint/flint.h>
 #include "nmod_mat_poly.h"
 #include "nmod_poly_mat_extra.h"

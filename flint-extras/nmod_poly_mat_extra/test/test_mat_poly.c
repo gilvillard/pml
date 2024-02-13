@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <time.h>
 #include "nmod_poly_mat_forms.h"
 #include "nmod_poly_mat_utils.h"
 #include "nmod_poly_mat_io.h"

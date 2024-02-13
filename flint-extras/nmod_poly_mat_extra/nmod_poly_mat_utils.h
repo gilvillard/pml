@@ -9,6 +9,7 @@
  *
  */
 
+#include <flint/nmod_poly.h>
 #include <flint/nmod_mat.h>
 #include <flint/fmpz_mat.h>
 #include <flint/nmod_poly_mat.h>

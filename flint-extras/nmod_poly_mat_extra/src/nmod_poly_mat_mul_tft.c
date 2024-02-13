@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <flint/nmod_mat.h>
 #ifdef TIME_TFT
 #include <time.h>

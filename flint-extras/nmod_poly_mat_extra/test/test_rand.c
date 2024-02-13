@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <time.h>
 #include <flint/fmpz.h>
 #include <flint/fmpz_mat.h>
 #include <flint/fmpz_vec.h>

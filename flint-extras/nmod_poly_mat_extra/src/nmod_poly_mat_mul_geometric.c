@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <flint/nmod_mat.h>
 
 #define DIRTY_ALLOC_MATRIX
