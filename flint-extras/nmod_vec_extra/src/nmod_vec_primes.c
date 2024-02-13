@@ -1,5 +1,5 @@
 #include <flint/nmod_vec.h>
-#include <flint/exception.h>
+//#include <flint/exception.h>
 
 #include "nmod_vec_extra.h"
 
