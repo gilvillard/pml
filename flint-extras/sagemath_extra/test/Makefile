@@ -7,7 +7,7 @@ CHK = $(patsubst %.c, %.chk, $(patsubst test_%, %, $(SRC)))
 COMPILE = $(patsubst %.c, %.exe, $(patsubst test_%, %, $(SRC)))
 
 CC = gcc
-CFLAGS = -Wall -O3 -march=native -I$(INC_DIR) -I$(INC_DIR) -I/usr/local/include
+CFLAGS = -Wall -O3 -march=native -I$(INC_DIR) -I$(INC_DIR) -I/usr/local/include -I/opt/homebrew/include
 LIBS = -lflint -lmpfr -lgmp -lm
 LDFLAGS = -L/opt/homebrew/lib -L/usr/local/lib
 
