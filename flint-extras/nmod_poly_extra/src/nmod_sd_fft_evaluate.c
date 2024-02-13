@@ -1,3 +1,4 @@
+#include <stdlib.h> 
 #include <flint/fft_small.h>
 #include "nmod_poly_extra.h"
 #include "nmod_vec_extra.h"
@@ -76,10 +77,10 @@ static void _fft_3(vec1d *x, const vec1d t1, const vec1d t2, const vec1d t3, con
     u1 = vec4d_load(x + 4);
     
     u = vec4d_add(u0, u1); // (-2p..2p)
-    z0 = u[0];
-    z1 = u[1];
-    z2 = u[2];
-    z3 = u[3];
+    z0 = u.e1[0];
+    z1 = u.e1[1];
+    z2 = u.e2[0];
+    z3 = u.e2[1];
     v0 = z0 + z2;  // (-4p..4p)
     v2 = z0 - z2;  // (-4p..4p)
     v1 = z1 + z3;  // (-4p..4p)
@@ -91,10 +92,10 @@ static void _fft_3(vec1d *x, const vec1d t1, const vec1d t2, const vec1d t3, con
     
     u = vec4d_sub(u0, u1); // (-2p..2p)
     v = vec4d_mulmod(u, w4, p4, pinv4); // (-p..p)
-    z0 = v[0];
-    z1 = v[1];
-    z2 = v[2];
-    z3 = v[3];
+    z0 = v.e1[0];
+    z1 = v.e1[1];
+    z2 = v.e2[0];
+    z3 = v.e2[1];
     v0 = z0 + z2;  // (-2p..2p)
     v2 = z0 - z2;  // (-2p..2p)
     v1 = z1 + z3;  // (-2p..2p)
@@ -526,8 +527,8 @@ void CRT_t(vec1d *x, vec1d *tmp, ulong n, vec1d half, vec1d p, vec1d pinv)
                 vec4d u, v;
                 v = vec4d_load_aligned(x + a + i);
                 u =vec4d_sub(vec4d_load_aligned(tmp + i), vec4d_add(v, v));
-                u = vec4d_reduce_2n_to_n(u + p4, p4);
-                vec4d_store_aligned(tmp + b + i, vec4d_reduce_2n_to_n(u + p4, p4));
+                u = vec4d_reduce_2n_to_n(vec4d_add(u, p4), p4); // GV 
+                vec4d_store_aligned(tmp + b + i, vec4d_reduce_2n_to_n(vec4d_add(u, p4), p4)); // GV 
             }
         for (; i < b; i++)
         {
