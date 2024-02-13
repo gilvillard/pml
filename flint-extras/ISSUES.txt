@@ -1,0 +1,99 @@
+Apple clang version 15.0.0 (clang-1500.0.40.1)
+Target: arm64-apple-darwin22.6.0
+Thread model: posix
+InstalledDir: /Library/Developer/CommandLineTools/usr/bin
+=========================================================================
+
+Mar 13 fév 2024 10:20:04 CET
+
+flint-extras/nmod_extra/src
+make 
+=========================================================================
+
+In file included from nmod_multimod_CRT_CRT.c:9:
+../../include/nmod_extra.h:137:26: error: redefinition of 'vec1n_addmod'
+FLINT_FORCE_INLINE vec1n vec1n_addmod(vec1n a, vec1n b, vec1n n)
+                         ^
+/usr/local/include/flint/machine_vectors.h:1474:26: note: previous definition is here
+FLINT_FORCE_INLINE vec1n vec1n_addmod(vec1n a, vec1n b, vec1n n)
+                         ^
+In file included from nmod_multimod_CRT_CRT.c:9:
+../../include/nmod_extra.h:155:12: error: call to undeclared function 'vec4d_reduce_2n_to_n'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+    return vec4d_reduce_2n_to_n(vec4d_add(a, b), n);
+           ^
+../../include/nmod_extra.h:155:12: note: did you mean 'vec4d_reduce_to_0n'?
+/usr/local/include/flint/machine_vectors.h:1295:1: note: 'vec4d_reduce_to_0n' declared here
+EXTEND_VEC_DEF3(vec2d, vec4d, _reduce_to_0n)
+^
+/usr/local/include/flint/machine_vectors.h:817:22: note: expanded from macro 'EXTEND_VEC_DEF3'
+FLINT_FORCE_INLINE V V##f(V a, V b, V c) { \
+                     ^
+<scratch space>:89:1: note: expanded from here
+vec4d_reduce_to_0n
+^
+In file included from nmod_multimod_CRT_CRT.c:9:
+../../include/nmod_extra.h:155:12: error: returning 'int' from a function with incompatible result type 'vec4d'
+    return vec4d_reduce_2n_to_n(vec4d_add(a, b), n);
+           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../include/nmod_extra.h:185:12: error: call to undeclared function '_mm256_mul_epu32'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+    return _mm256_mul_epu32(u, v);
+           ^
+../../include/nmod_extra.h:185:12: error: returning 'int' from a function with incompatible result type 'vec4n'
+    return _mm256_mul_epu32(u, v);
+           ^~~~~~~~~~~~~~~~~~~~~~
+../../include/nmod_extra.h:190:12: error: call to undeclared function '_mm256_setzero_si256'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+    return _mm256_setzero_si256();
+           ^
+../../include/nmod_extra.h:190:12: error: returning 'int' from a function with incompatible result type 'vec4n'
+    return _mm256_setzero_si256();
+           ^~~~~~~~~~~~~~~~~~~~~~
+../../include/nmod_extra.h:195:5: error: call to undeclared function '_mm256_store_si256'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+    _mm256_store_si256((__m256i*) z, a);
+    ^
+../../include/nmod_extra.h:195:33: error: expected expression
+    _mm256_store_si256((__m256i*) z, a);
+                                ^
+../../include/nmod_extra.h:195:25: error: use of undeclared identifier '__m256i'
+    _mm256_store_si256((__m256i*) z, a);
+                        ^
+../../include/nmod_extra.h:193:52: warning: unused parameter 'z' [-Wunused-parameter]
+FLINT_FORCE_INLINE void vec4n_store_aligned(ulong* z, vec4n a)
+                                                   ^
+../../include/nmod_extra.h:199:26: error: redefinition of 'vec2d_reduce_to_pm1no'
+FLINT_FORCE_INLINE vec2d vec2d_reduce_to_pm1no(vec2d a, vec2d n, vec2d ninv)
+                         ^
+/usr/local/include/flint/machine_vectors.h:1102:26: note: previous definition is here
+FLINT_FORCE_INLINE vec2d vec2d_reduce_to_pm1no(vec2d a, vec2d n, vec2d ninv) {
+                         ^
+In file included from nmod_multimod_CRT_CRT.c:9:
+../../include/nmod_extra.h:201:12: error: call to undeclared function '_mm_fnmadd_pd'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+    return _mm_fnmadd_pd(_mm_round_pd(_mm_mul_pd(a, ninv), 4), n, a); 
+           ^
+../../include/nmod_extra.h:201:26: error: call to undeclared function '_mm_round_pd'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+    return _mm_fnmadd_pd(_mm_round_pd(_mm_mul_pd(a, ninv), 4), n, a); 
+                         ^
+../../include/nmod_extra.h:201:39: error: call to undeclared function '_mm_mul_pd'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+    return _mm_fnmadd_pd(_mm_round_pd(_mm_mul_pd(a, ninv), 4), n, a); 
+                                      ^
+../../include/nmod_extra.h:201:12: error: returning 'int' from a function with incompatible result type 'vec2d' (aka 'float64x2_t')
+    return _mm_fnmadd_pd(_mm_round_pd(_mm_mul_pd(a, ninv), 4), n, a); 
+           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../include/nmod_extra.h:205:26: error: redefinition of 'vec2d_reduce_pm1no_to_0n'
+FLINT_FORCE_INLINE vec2d vec2d_reduce_pm1no_to_0n(vec2d a, vec2d n)
+                         ^
+/usr/local/include/flint/machine_vectors.h:1129:26: note: previous definition is here
+FLINT_FORCE_INLINE vec2d vec2d_reduce_pm1no_to_0n(vec2d a, vec2d n) {
+                         ^
+In file included from nmod_multimod_CRT_CRT.c:9:
+../../include/nmod_extra.h:207:12: error: call to undeclared function '_mm_blendv_pd'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+    return _mm_blendv_pd(a, _mm_add_pd(a, n), a); 
+           ^
+../../include/nmod_extra.h:207:29: error: call to undeclared function '_mm_add_pd'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+    return _mm_blendv_pd(a, _mm_add_pd(a, n), a); 
+                            ^
+../../include/nmod_extra.h:207:12: error: returning 'int' from a function with incompatible result type 'vec2d' (aka 'float64x2_t')
+    return _mm_blendv_pd(a, _mm_add_pd(a, n), a); 
+           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+11 warnings and 20 errors generated.
+
