@@ -6,6 +6,18 @@ InstalledDir: /Library/Developer/CommandLineTools/usr/bin
 
 Mar 13 fév 2024 17:27:23 CET
 
-Main modifs dans nmod_extra, correction très incertaine 
+Main modifs dans nmod_extra.h, temporary "patch", rough, at least things are compiling (src and test)  
+
+
+====
+
+Not tried for the moment :
+
+fmpz_mat_extra				
+fmpz_mod_mat_extra		
+fmpz_mod_poly_mat			
+fmpz_extra		
+fmpz_poly_mat_extra	
+
 
 
