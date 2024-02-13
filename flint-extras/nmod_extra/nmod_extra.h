@@ -131,6 +131,8 @@ FLINT_FORCE_INLINE mp_limb_t mul_mod_precon_unreduced(mp_limb_t a, mp_limb_t b, 
 /*------------------------------------------------------------*/
 /*------------------------------------------------------------*/
 
+#if !defined(__ARM_NEON) && !defined(_M_ARM64)
+
 /*------------------------------------------------------------*/
 /* returns a + b mod n, assuming a,b reduced mod n            */
 /*------------------------------------------------------------*/
@@ -138,6 +140,8 @@ FLINT_FORCE_INLINE vec1n vec1n_addmod(vec1n a, vec1n b, vec1n n)
 {
     return n - b > a ? a + b : a + b - n;
 }
+
+#endif
 
 /*------------------------------------------------------------*/
 /* returns a + b mod n, assuming a,b reduced mod n            */
@@ -147,6 +151,8 @@ FLINT_FORCE_INLINE vec1d vec1d_addmod(vec1d a, vec1d b, vec1d n)
     return a + b - n >= 0 ? a + b - n : a + b;
 }
 
+#if !defined(__ARM_NEON) && !defined(_M_ARM64)
+
 /*------------------------------------------------------------*/
 /* returns a + b mod n, assuming a,b reduced mod n            */
 /*------------------------------------------------------------*/
@@ -154,6 +160,21 @@ FLINT_FORCE_INLINE vec4d vec4d_addmod(vec4d a, vec4d b, vec4d n)
 {
     return vec4d_reduce_2n_to_n(vec4d_add(a, b), n);
 }
+
+#else
+
+
+FLINT_FORCE_INLINE vec4d vec4d_reduce_2n_to_n(vec4d a, vec4d n) {
+    vec4d s = vec4d_sub(a, n);
+    return vec4d_blendv(s, a, s);
+}
+
+FLINT_FORCE_INLINE vec4d vec4d_addmod(vec4d a, vec4d b, vec4d n)
+{
+    return vec4d_reduce_2n_to_n(vec4d_add(a, b), n);
+}
+
+#endif 
 
 /*------------------------------------------------------------*/
 /* TODO: if AVX512 supported, use cvtepi64_pd instead         */
@@ -180,20 +201,49 @@ FLINT_FORCE_INLINE void vec4d_store_unaligned_mp_ptr(mp_ptr dest, vec4d a)
 }
 
 
-FLINT_FORCE_INLINE vec4n vec4n_mul(vec4n u, vec4n v)
-{
-    return _mm256_mul_epu32(u, v);
-}
+// FLINT_FORCE_INLINE vec4n vec4n_mul(vec4n u, vec4n v)
+// {
+//     return _mm256_mul_epu32(u, v);
+// }
+
+
+#if !defined(__ARM_NEON) && !defined(_M_ARM64)
+
 
 FLINT_FORCE_INLINE vec4n vec4n_zero()
 {
     return _mm256_setzero_si256();
 }
 
-FLINT_FORCE_INLINE void vec4n_store_aligned(ulong* z, vec4n a)
-{
-    _mm256_store_si256((__m256i*) z, a);
+#else
+
+FLINT_FORCE_INLINE vec4n vec4n_zero() {
+    vec2n x = vec2n_set_n(0);
+    vec4n z = {x, x};
+    return z;
 }
+
+FLINT_FORCE_INLINE vec4n vec4n_add(vec4n a, vec4n b)
+{
+    vec4n z = {a.e1[0]+b.e1[0],a.e1[1]+b.e1[1],a.e2[0]+b.e2[0],a.e2[1]+b.e2[1]};
+    return z;
+}
+
+FLINT_FORCE_INLINE vec4n vec4n_mul(vec4n a, vec4n b)
+{
+    vec4n z = {a.e1[0]*b.e1[0],a.e1[1]*b.e1[1],a.e2[0]*b.e2[0],a.e2[1]*b.e2[1]};
+    return z;
+}
+
+#endif 
+
+// FLINT_FORCE_INLINE void vec4n_store_aligned(ulong* z, vec4n a)
+// {
+//     _mm256_store_si256((__m256i*) z, a);
+// }
+
+
+#if !defined(__ARM_NEON) && !defined(_M_ARM64)
 
 /* reduce_to_pm1n(a, n, ninv): return a mod n in (-n,n) */
 FLINT_FORCE_INLINE vec2d vec2d_reduce_to_pm1no(vec2d a, vec2d n, vec2d ninv)
@@ -201,11 +251,14 @@ FLINT_FORCE_INLINE vec2d vec2d_reduce_to_pm1no(vec2d a, vec2d n, vec2d ninv)
     return _mm_fnmadd_pd(_mm_round_pd(_mm_mul_pd(a, ninv), 4), n, a); 
 }
 
+
+
 /* reduce_pm1no_to_0n(a, n): return a mod n in [0,n) assuming a in (-n,n) */
 FLINT_FORCE_INLINE vec2d vec2d_reduce_pm1no_to_0n(vec2d a, vec2d n)
 {
     return _mm_blendv_pd(a, _mm_add_pd(a, n), a); 
 }
+
 
 /* reduce_to_0n(a, n, ninv): return a mod n in [0,n) */
 FLINT_FORCE_INLINE vec2d vec2d_reduce_to_0n(vec2d a, vec2d n, vec2d ninv)
@@ -213,12 +266,43 @@ FLINT_FORCE_INLINE vec2d vec2d_reduce_to_0n(vec2d a, vec2d n, vec2d ninv)
     return vec2d_reduce_pm1no_to_0n(vec2d_reduce_to_pm1no(a, n, ninv), n);
 }
 
+
+
 FLINT_FORCE_INLINE vec2d vec2d_set_d2(double a1, double a0)
 {
     return _mm_set_pd(a0, a1);
 }
 
+#endif
+
+#if !defined(__ARM_NEON) && !defined(_M_ARM64)
+
 #define vec4n_bit_shift_right_45(a) vec4n_bit_shift_right((a), 45)
+
+#else
+
+FLINT_FORCE_INLINE vec2n vec2n_bit_shift_right_45(vec2n a)
+{
+    return vshrq_n_u64(a, 45);
+}
+
+FLINT_FORCE_INLINE vec4n vec4n_bit_shift_right_45(vec4n a)
+{
+    vec4n z = {vec2n_bit_shift_right_45(a.e1), vec2n_bit_shift_right_45(a.e2)};
+    return z;
+}
+
+FLINT_FORCE_INLINE vec1d vec1d_reduce_2n_to_n(vec1d a, vec1d n) {
+    return a-n >= 0 ? a-n : a;
+}
+
+
+
+#endif
+
+
+
+
 
 /*------------------------------------------------------------*/
 /*------------------------------------------------------------*/
