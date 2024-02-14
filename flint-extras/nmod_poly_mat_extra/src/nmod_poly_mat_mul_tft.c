@@ -1,5 +1,10 @@
 #include <stdlib.h>
 #include <flint/nmod_mat.h>
+#include <flint/nmod_poly_mat.h>
+#include <flint/fft_small.h>
+
+#include "nmod_poly_extra.h"
+
 #ifdef TIME_TFT
 #include <time.h>
 #endif
