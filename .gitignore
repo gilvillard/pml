@@ -124,3 +124,6 @@ flint-extras/nmod_poly_mat_extra/test/test_swap_permute
 flint-extras/nmod_poly_mat_extra/test/test_weak_popov_form
 flint-extras/nmod_mat_extra/test/nmod_mat_mul_small_modulus.chk
 flint-extras/nmod_mat_extra/test/test_nmod_mat_mul_small_modulus
+ntl-extras/mat_lzz_pX_extra/test/test_invmodcomp
+ntl-extras/mat_lzz_pX_extra/test/test_mul22
+ntl-extras/mat_lzz_pX_extra/test/test_solve_kernel
