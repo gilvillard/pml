@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <time.h>
+#include <flint/nmod_mat.h>
 #include "nmod_poly_mat_approximant.h"
 #include "nmod_poly_mat_io.h" // for print_pretty
 
