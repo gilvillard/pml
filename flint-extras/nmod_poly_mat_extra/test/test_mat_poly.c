@@ -1,12 +1,12 @@
-#include <stdlib.h>
 #include <time.h>
+#include <stdlib.h>
+#include <flint/nmod_types.h>
 #include <flint/fmpz_mat.h>
-#include <flint/nmod_poly.h>
+
 #include "nmod_poly_mat_forms.h"
 #include "nmod_poly_mat_utils.h"
 #include "nmod_poly_mat_io.h"
 #include "sagemath_extra.h"
-#include <flint/nmod_poly_mat.h>
 
 // TODO make random choice for given prime (or for random prime of given size)
 #define PRIME_30_BITS 536870923
