@@ -1,5 +1,7 @@
 # ignore all .swp files
 *.swp
+
+# ignore compilation byproduct
 ntl-extras/vec_lzz_p_extra/test/test_inv
 ntl-extras/vec_lzz_p_extra/test/test_inv.chk
 ntl-extras/structured_lzz_pX/test/test_sylvester_inv_trunc

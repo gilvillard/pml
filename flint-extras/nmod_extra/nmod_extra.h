@@ -201,6 +201,7 @@ FLINT_FORCE_INLINE void vec4d_store_unaligned_mp_ptr(mp_ptr dest, vec4d a)
 }
 
 
+// // TODO: if defined (with other version at line 233)?
 // FLINT_FORCE_INLINE vec4n vec4n_mul(vec4n u, vec4n v)
 // {
 //     return _mm256_mul_epu32(u, v);
