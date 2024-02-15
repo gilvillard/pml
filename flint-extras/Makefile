@@ -2,13 +2,17 @@ DIRS = nmod_extra nmod_vec_extra nmod_poly_extra fmpz_extra nmod_mat_extra fmpz_
 
 all:    clean
 	$(foreach dir, $(DIRS), if [ -d $(dir) ]; then cd $(dir)/src ; make ; cd ../.. ; fi ;)
+	cd lib; make -f makelib; cd ..; 
 
 clean:
-	rm -f lib/*
+	rm -f lib/*.o lib/*.dylib
 	rm -f include/*.h
 	$(foreach dir, $(DIRS), if [ -d $(dir)/src ]; then cd $(dir)/src ; make clean ; cd ../.. ; fi ;)
 	$(foreach dir, $(DIRS), if [ -d $(dir)/test ]; then cd $(dir)/test ; make clean ; cd ../.. ; fi ;)
 	$(foreach dir, $(DIRS), if [ -d $(dir)/timings ]; then cd $(dir)/timings ; make clean ; cd ../.. ; fi ;)
+
+install:
+	cp lib/libpmlflint.dylib /usr/local/lib
 
 .PHONY: doc
 doc:
@@ -17,3 +21,4 @@ doc:
 docclean:
 	rm -r include/html
 	rm -r include/latex
+
