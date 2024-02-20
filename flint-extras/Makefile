@@ -13,7 +13,7 @@ DIRS = nmod_extra nmod_vec_extra nmod_poly_extra fmpz_extra nmod_mat_extra fmpz_
 
 all:    clean
 	$(foreach dir, $(DIRS), if [ -d $(dir) ]; then cd $(dir)/src ; make ; cd ../.. ; fi ;)
-	cd lib; make -f makelib; cd ..; 
+	#cd lib; make -f makelib; cd ..; 
 
 clean:
 	rm -f lib/*.o lib/*.dylib
