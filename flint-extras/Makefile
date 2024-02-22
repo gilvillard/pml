@@ -36,5 +36,6 @@ shared:
 	$(CC) -shared -fPIC -o libpmlflint.dylib $(OBJS) $(CFLAGS)  $(LDFLAGS) $(LIBS)
 
 install:
+	$(CC) -shared -fPIC -o libpmlflint.dylib $(OBJS) $(CFLAGS)  $(LDFLAGS) $(LIBS)
 	mv libpmlflint.dylib $(INSTALL_DIR)/
 
