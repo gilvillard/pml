@@ -2,13 +2,14 @@
 #include <flint/nmod_poly_mat.h>
 #include <flint/fft_small.h>
 
+#include "nmod_poly_mat_multiply.h"
 #include "nmod_poly_extra.h"
 
 #ifdef TIME_TFT
 #include <time.h>
+#elif defined(TIME_TFT_EVAL) // TODO Vincent
+#include <time.h>
 #endif
-
-#include "nmod_poly_mat_multiply.h"
 
 /** Multiplication for polynomial matrices
  *  sets C = A * B
@@ -16,7 +17,11 @@
  *  ASSUME: 2^(ceiling(log_2(lenA+lenB-1))) divides p-1 (assumption not checked)
  *  uses tft multiplication
  */
+#ifdef TIME_TFT_EVAL
+double nmod_poly_mat_mul_tft(nmod_poly_mat_t C, const nmod_poly_mat_t A, const nmod_poly_mat_t B)
+#else
 void nmod_poly_mat_mul_tft(nmod_poly_mat_t C, const nmod_poly_mat_t A, const nmod_poly_mat_t B)
+#endif
 {
     nmod_mat_t *mod_A, *mod_B, *mod_C;
     ulong ellA, ellB, ellC, order;
@@ -32,6 +37,9 @@ void nmod_poly_mat_mul_tft(nmod_poly_mat_t C, const nmod_poly_mat_t A, const nmo
     double t = 0.0;
     clock_t tt;
     tt = clock();
+#elif defined(TIME_TFT_EVAL) // TODO Vincent
+    double t = 0.0;
+    clock_t tt;
 #endif    
 
     // straightforward algorithm: tft-evaluate A and B, multiply the values, interpolate C
@@ -43,7 +51,11 @@ void nmod_poly_mat_mul_tft(nmod_poly_mat_t C, const nmod_poly_mat_t A, const nmo
     if (m < 1 || n < 1 || k < 1)
     {
         nmod_poly_mat_zero(C);
+#ifdef TIME_TFT_EVAL
+        return 0.0;
+#else
         return;
+#endif
     }
 
     if (C == A || C == B)
@@ -53,7 +65,11 @@ void nmod_poly_mat_mul_tft(nmod_poly_mat_t C, const nmod_poly_mat_t A, const nmo
         nmod_poly_mat_mul_tft(T, A, B);
         nmod_poly_mat_swap_entrywise(C, T);
         nmod_poly_mat_clear(T);
+#ifdef TIME_TFT_EVAL
+        return 0.0;
+#else
         return;
+#endif
     }
 
     // length = 0 iff matrix is zero
@@ -63,7 +79,11 @@ void nmod_poly_mat_mul_tft(nmod_poly_mat_t C, const nmod_poly_mat_t A, const nmo
     if (ellA == 0 || ellB == 0)
     {
         nmod_poly_mat_zero(C);
+#ifdef TIME_TFT_EVAL
+        return 0.0;
+#else
         return;
+#endif
     }
 
     ellC = ellA + ellB - 1;  // length(C) = length(A) + length(B) - 1
@@ -183,6 +203,8 @@ void nmod_poly_mat_mul_tft(nmod_poly_mat_t C, const nmod_poly_mat_t A, const nmo
     t = (double)(clock()-tt) / CLOCKS_PER_SEC;
     printf("mem init: %lf\n", t);
     tt = clock();
+#elif defined(TIME_TFT_EVAL) // TODO Vincent
+    tt = clock();
 #endif
     
     for (i = 0; i < n; i++)
@@ -196,6 +218,9 @@ void nmod_poly_mat_mul_tft(nmod_poly_mat_t C, const nmod_poly_mat_t A, const nmo
 #ifdef TIME_TFT
     t = (double)(clock()-tt) / CLOCKS_PER_SEC;
     printf("eval A: %lf\n", t);
+    tt = clock();
+#elif defined(TIME_TFT_EVAL) // TODO Vincent
+    t = (double)(clock()-tt) / CLOCKS_PER_SEC;
     tt = clock();
 #endif
     
@@ -264,4 +289,7 @@ void nmod_poly_mat_mul_tft(nmod_poly_mat_t C, const nmod_poly_mat_t A, const nmo
     printf("clean: %lf\n", t);
 #endif
 
+#ifdef TIME_TFT_EVAL
+    return t;
+#endif
 }

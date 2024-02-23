@@ -15,7 +15,12 @@
  *  ASSUME: 2^(ceiling(log_2(lenA+lenB-1))) divides p-1 (assumption not checked)
  *  uses tft multiplication
  */
+#define TIME_TFT_EVAL // TODO Vincent
+#ifdef TIME_TFT_EVAL
+double nmod_poly_mat_mul_tft(nmod_poly_mat_t C, const nmod_poly_mat_t A, const nmod_poly_mat_t B);
+#else
 void nmod_poly_mat_mul_tft(nmod_poly_mat_t C, const nmod_poly_mat_t A, const nmod_poly_mat_t B);
+#endif
 
 /** Multiplication for polynomial matrices
  *  sets C = A * B
