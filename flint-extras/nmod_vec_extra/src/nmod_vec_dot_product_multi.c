@@ -4,8 +4,8 @@
 #include "nmod_vec_extra.h"
 
 #define __ll_lowhi_parts26(tlo,thi,t)     \
-      thi = (uint) ((t) >> 26);           \
-      tlo = ((uint)(t)) & 0x3FFFFFF;
+      thi = (unsigned int) ((t) >> 26);           \
+      tlo = ((unsigned int)(t)) & 0x3FFFFFF;
 
 /* ------------------------------------------------------------ */
 /* number of limbs needed for a dot product of length len       */
@@ -1178,7 +1178,7 @@ void _nmod_vec_dot_product_multi_2(mp_ptr uv, mp_srcptr u, mp_srcptr * v,
 void _nmod_vec_dot_product_multi_2_split26(mp_ptr uv, mp_srcptr u, mp_srcptr * v,
                                    ulong len, ulong k, nmod_t mod)
 {
-    uint ulo, uhi, vlo, vhi;
+    unsigned int ulo, uhi, vlo, vhi;
     mp_ptr uv_mi = _nmod_vec_init(k);
     mp_ptr uv_hi = _nmod_vec_init(k);
     _nmod_vec_zero(uv, k);  // plays the role of uv_lo

@@ -5,13 +5,13 @@
 #include "nmod_vec_extra.h"
 
 #define __ll_lowhi_parts16(tlo,thi,t)     \
-      tlo = (uint) (t);                   \
+      tlo = (unsigned int) (t);                   \
       thi = ((tlo) >> 16);                \
       tlo = (tlo) & 0xFFFF;
 
 #define __ll_lowhi_parts26(tlo,thi,t)     \
-      thi = (uint) ((t) >> 26);           \
-      tlo = ((uint)(t)) & 0x3FFFFFF;
+      thi = (unsigned int) ((t) >> 26);           \
+      tlo = ((unsigned int)(t)) & 0x3FFFFFF;
 
 /* ------------------------------------------------------------ */
 /* number of limbs needed for a dot product of length len       */
@@ -108,7 +108,7 @@ mp_limb_t _nmod_vec_dot_product_2(mp_srcptr v1, mp_srcptr v2, ulong len, nmod_t 
 // TODO benchmark more, integrate, give precise conditions for when this works
 mp_limb_t _nmod_vec_dot_product_2_split16(mp_srcptr v1, mp_srcptr v2, ulong len, nmod_t mod)
 {
-    uint v1hi, v1lo, v2hi, v2lo;
+    unsigned int v1hi, v1lo, v2hi, v2lo;
     ulong ulo = UWORD(0);
     ulong umi = UWORD(0);
     ulong uhi = UWORD(0);
@@ -135,7 +135,7 @@ mp_limb_t _nmod_vec_dot_product_2_split16(mp_srcptr v1, mp_srcptr v2, ulong len,
 // but do this only if this really is interesting in terms of speed)
 mp_limb_t _nmod_vec_dot_product_2_split26(mp_srcptr v1, mp_srcptr v2, ulong len, nmod_t mod)
 {
-    uint v1hi, v1lo, v2hi, v2lo;
+    unsigned int v1hi, v1lo, v2hi, v2lo;
     ulong ulo = UWORD(0);
     ulong umi = UWORD(0);
     ulong uhi = UWORD(0);
