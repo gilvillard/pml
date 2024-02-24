@@ -235,7 +235,7 @@ void time_matrix_dft(ulong m, ulong n, ulong len)
         nmod_poly_mat_rand(A, state, len);
         tt1 = 0.0;
         long nb_iter1 = 0;
-        while (tt1 < 0.2)
+        while (tt1 < 0.5)
         {
             nmod_mat_poly_t matA;
             nmod_mat_poly_init(matA, A->r, A->c, A->modulus);
@@ -262,7 +262,7 @@ void time_matrix_dft(ulong m, ulong n, ulong len)
 
         double tt2 = 0.0;
         long nb_iter2 = 0;
-        while (tt2 < 0.2)
+        while (tt2 < 0.5)
         {
             clock_t t2 = clock();
             tt_eval += nmod_poly_mat_mul_tft(C, A, B);
