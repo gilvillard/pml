@@ -323,6 +323,7 @@ int main(int argc, char ** argv)
             {
                 printf("%ld\t%ld\t", dim, len);
                 time_matrix_dft(dim, dim, len);
+                fflush(stdout);
             }
         }
         for (ulong dim = 5; dim < 16; dim += 3)
@@ -331,6 +332,7 @@ int main(int argc, char ** argv)
             {
                 printf("%ld\t%ld\t", dim, len);
                 time_matrix_dft(dim, dim, len);
+                fflush(stdout);
             }
         }
         for (ulong dim = 16; dim < 256; dim *= 2)
@@ -339,6 +341,7 @@ int main(int argc, char ** argv)
             {
                 printf("%ld\t%ld\t", dim, len);
                 time_matrix_dft(dim, dim, len);
+                fflush(stdout);
             }
         }
         return 0;
