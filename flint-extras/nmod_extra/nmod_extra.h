@@ -224,11 +224,11 @@ FLINT_FORCE_INLINE vec4n vec4n_zero() {
     return z;
 }
 
-FLINT_FORCE_INLINE vec4n vec4n_add(vec4n a, vec4n b)
-{
-    vec4n z = {a.e1[0]+b.e1[0],a.e1[1]+b.e1[1],a.e2[0]+b.e2[0],a.e2[1]+b.e2[1]};
-    return z;
-}
+// FLINT_FORCE_INLINE vec4n vec4n_add(vec4n a, vec4n b)
+// {
+//     vec4n z = {a.e1[0]+b.e1[0],a.e1[1]+b.e1[1],a.e2[0]+b.e2[0],a.e2[1]+b.e2[1]};
+//     return z;
+// }
 
 FLINT_FORCE_INLINE vec4n vec4n_mul(vec4n a, vec4n b)
 {
