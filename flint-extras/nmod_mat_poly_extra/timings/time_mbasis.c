@@ -1,4 +1,7 @@
 #include <string.h> // for memset
+#include <stdlib.h>
+#include <time.h>
+#include<flint/ulong_extras.h>
 #include "nmod_mat_poly.h"
 
 // main function
