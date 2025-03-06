@@ -55,7 +55,7 @@ void benchmark_mbasis(slong rdim, slong cdim, slong sigma, slong len,
  */
 void benchmark_nbits(ulong nbits, flint_rand_t state)
 {
-    flint_randinit(state);
+    flint_rand_init(state);
     const ulong prime = n_randprime(state, nbits, 0);
 
     slong rdims[] = { 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024};
@@ -77,7 +77,7 @@ void benchmark_nbits(ulong nbits, flint_rand_t state)
         }
     }
 
-    flint_randclear(state);
+    flint_rand_clear(state);
 }
 
 /** Launches one benchmark for fixed parameters.
@@ -110,7 +110,7 @@ int main(int argc, char *argv[])
 
     srand(time(NULL));
     flint_rand_t state;
-    flint_randinit(state);
+    flint_rand_init(state);
     flint_randseed(state, rand(), rand());
 
     if (argc!=2 && argc!=5)
@@ -135,7 +135,7 @@ int main(int argc, char *argv[])
         benchmark_nbits_dim_deg(nbits,rdim,cdim,deg,state);
     }
 
-    flint_randclear(state);
+    flint_rand_clear(state);
 
     return 0;
 }
