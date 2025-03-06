@@ -2,16 +2,16 @@ SYSINC_DIR = /usr/local/include
 INC_DIR = ../../include
 SYSLIB_DIR = /usr/local/lib
 LIB_DIR = ../../lib
-OBJS = $(wildcard $(LIB_DIR)/*)
+OBJS = $(wildcard $(LIB_DIR)/*.o)
 SRC = $(wildcard test*.c)
 EXEC = $(patsubst %.c, %, $(SRC))
 CHK = $(patsubst %.c, %.chk, $(patsubst test_%, %, $(SRC)))
 COMPILE = $(patsubst %.c, %.exe, $(patsubst test_%, %, $(SRC)))
 
 CC = gcc
-CFLAGS = -Wall -O3 -march=native -I$(INC_DIR) -I$(SYSINC_DIR) -I/opt/homebrew/include -I/usr/local/include -L$(LIB_DIR) -L$(SYSLIB_DIR) 
-LIBS = -lflint -lmpfr -lgmp -lm -lpthread
 LDFLAGS = -L/opt/homebrew/lib -L/usr/local/lib
+LIBS =  -lflint -lmpfr -lgmp -lm -lpthread
+CFLAGS = -Wall -O3 -march=native -I$(INC_DIR) -I$(SYSINC_DIR) -I/opt/homebrew/include -I/usr/local/include -L$(LIB_DIR) -L$(SYSLIB_DIR) $(LDFLAGS)
 
 .PHONY: clean
 
