@@ -86,17 +86,16 @@ void _nmod_vec_dot2_small_modulus(nn_ptr res, nn_ptr a1, nn_ptr a2, nn_ptr b, ul
         acc_last2 += (*as2++) * val_b;
     }
 
-<<<<<<< HEAD
     const mp_limb_t total_low1 = sum_low1.e1[0] + sum_low1.e1[1] + sum_low1.e2[0] + sum_low1.e2[1] + (acc_last1 & ((1L << 45) - 1));
     const mp_limb_t total_high1 = sum_high1.e1[0] + sum_high1.e1[1] + sum_high1.e2[0] + sum_high1.e2[1] + (acc_last1 >> 45);
     const mp_limb_t total_low2 = sum_low2.e1[0] + sum_low2.e1[1] + sum_low2.e2[0] + sum_low2.e2[1] + (acc_last2 & ((1L << 45) - 1));
     const mp_limb_t total_high2 = sum_high2.e1[0] + sum_high2.e1[1] + sum_high2.e2[0] + sum_high2.e2[1] + (acc_last2 >> 45);
-=======
-    const ulong total_low1 = sum_low1[0] + sum_low1[1] + sum_low1[2] + sum_low1[3] + (acc_last1 & ((1L << 45) - 1));
-    const ulong total_high1 = sum_high1[0] + sum_high1[1] + sum_high1[2] + sum_high1[3] + (acc_last1 >> 45);
-    const ulong total_low2 = sum_low2[0] + sum_low2[1] + sum_low2[2] + sum_low2[3] + (acc_last2 & ((1L << 45) - 1));
-    const ulong total_high2 = sum_high2[0] + sum_high2[1] + sum_high2[2] + sum_high2[3] + (acc_last2 >> 45);
->>>>>>> 3022ab666e09dcf166c23229f47c6a295ef76d0c
+
+    // const ulong total_low1 = sum_low1[0] + sum_low1[1] + sum_low1[2] + sum_low1[3] + (acc_last1 & ((1L << 45) - 1));  // GV march 6
+    // const ulong total_high1 = sum_high1[0] + sum_high1[1] + sum_high1[2] + sum_high1[3] + (acc_last1 >> 45);
+    // const ulong total_low2 = sum_low2[0] + sum_low2[1] + sum_low2[2] + sum_low2[3] + (acc_last2 & ((1L << 45) - 1));
+    // const ulong total_high2 = sum_high2[0] + sum_high2[1] + sum_high2[2] + sum_high2[3] + (acc_last2 >> 45);
+
 
     vec2d sum;
     sum[0] = total_low1 + power_two*total_high1;

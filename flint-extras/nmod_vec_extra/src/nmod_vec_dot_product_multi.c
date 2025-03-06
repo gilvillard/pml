@@ -1178,15 +1178,15 @@ void _nmod_vec_dot_product_multi_2(nn_ptr uv, nn_srcptr u, nn_srcptr * v,
 void _nmod_vec_dot_product_multi_2_split26(nn_ptr uv, nn_srcptr u, nn_srcptr * v,
                                    ulong len, ulong k, nmod_t mod)
 {
-<<<<<<< HEAD
-    unsigned int ulo, uhi, vlo, vhi;
-    mp_ptr uv_mi = _nmod_vec_init(k);
-    mp_ptr uv_hi = _nmod_vec_init(k);
-=======
-    uint ulo, uhi, vlo, vhi;
+
+    unsigned int ulo, uhi, vlo, vhi;  // GV march 6
     nn_ptr uv_mi = _nmod_vec_init(k);
     nn_ptr uv_hi = _nmod_vec_init(k);
->>>>>>> 3022ab666e09dcf166c23229f47c6a295ef76d0c
+
+    // uint ulo, uhi, vlo, vhi;
+    // nn_ptr uv_mi = _nmod_vec_init(k);
+    // nn_ptr uv_hi = _nmod_vec_init(k);
+
     _nmod_vec_zero(uv, k);  // plays the role of uv_lo
     _nmod_vec_zero(uv_mi, k);
     _nmod_vec_zero(uv_hi, k);

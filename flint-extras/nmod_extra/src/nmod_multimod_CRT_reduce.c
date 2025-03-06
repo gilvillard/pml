@@ -34,14 +34,14 @@ void nmod_multimod_CRT_reduce(nn_ptr *residues, nn_ptr input, ulong nb, nmod_mul
                     {
                         vec4n t = vec4n_load_unaligned(input + i);
                         vec4d tlo = vec4n_convert_limited_vec4d(vec4n_bit_and(t, vec4n_set_n(4294967295)));
-<<<<<<< HEAD
+
                         //vec4d thi = vec4n_convert_limited_vec4d(vec4n_bit_shift_right(t, 32)); // GV 
-			vec4d thi = vec4n_convert_limited_vec4d(vec4n_bit_shift_right_32(t));
-                        vec4d_store_unaligned_mp_ptr(res + i, vec4d_addmod(tlo,
-=======
-                        vec4d thi = vec4n_convert_limited_vec4d(vec4n_bit_shift_right(t, 32));
-                        vec4d_store_unaligned_nn_ptr(res + i, vec4d_addmod(tlo,
->>>>>>> 3022ab666e09dcf166c23229f47c6a295ef76d0c
+			          vec4d thi = vec4n_convert_limited_vec4d(vec4n_bit_shift_right_32(t));
+              //          vec4d_store_unaligned_mp_ptr(res + i, vec4d_addmod(tlo,
+
+                         //vec4d thi = vec4n_convert_limited_vec4d(vec4n_bit_shift_right(t, 32));
+                         vec4d_store_unaligned_nn_ptr(res + i, vec4d_addmod(tlo, // GV march 6
+
                                                                            vec4d_reduce_pm1no_to_0n(
                                                                                vec4d_mulmod(thi, vec4d_set_d(1L << 32), n4, ninv4),
                                                                                n4),

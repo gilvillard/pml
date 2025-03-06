@@ -200,7 +200,7 @@ FLINT_FORCE_INLINE void vec4d_store_unaligned_nn_ptr(nn_ptr dest, vec4d a)
 }
 
 
-<<<<<<< HEAD
+
 // // TODO: if defined (with other version at line 233)?
 // FLINT_FORCE_INLINE vec4n vec4n_mul(vec4n u, vec4n v)
 // {
@@ -222,11 +222,12 @@ FLINT_FORCE_INLINE vec4n vec4n_zero() {
     vec2n x = vec2n_set_n(0);
     vec4n z = {x, x};
     return z;
-=======
-FLINT_FORCE_INLINE void vec4n_store_aligned(ulong* z, vec4n a)
-{
-    _mm256_store_si256((__m256i*) z, a);
->>>>>>> 3022ab666e09dcf166c23229f47c6a295ef76d0c
+
+// FLINT_FORCE_INLINE void vec4n_store_aligned(ulong* z, vec4n a) GV march 6 
+// {
+//     _mm256_store_si256((__m256i*) z, a);
+
+
 }
 
 // FLINT_FORCE_INLINE vec4n vec4n_add(vec4n a, vec4n b)

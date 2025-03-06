@@ -9,7 +9,11 @@ LDFLAGS = -L/opt/homebrew/lib -L/usr/local/lib
 
 INSTALL_DIR = /usr/local/lib
 
-DIRS = nmod_extra nmod_vec_extra nmod_poly_extra fmpz_extra nmod_mat_extra fmpz_mat_extra nmod_mat_poly_extra nmod_poly_mat_extra sagemath_extra
+
+
+DIRS = nmod_extra nmod_vec_extra nmod_poly_extra nmod_mat_extra nmod_mat_poly_extra nmod_poly_mat_extra sagemath_extra
+
+#DIRS = nmod_extra nmod_vec_extra nmod_poly_extra fmpz_extra nmod_mat_extra fmpz_mat_extra nmod_mat_poly_extra nmod_poly_mat_extra sagemath_extra
 
 all:    clean
 	$(foreach dir, $(DIRS), if [ -d $(dir) ]; then cd $(dir)/src ; make ; cd ../.. ; fi ;)
