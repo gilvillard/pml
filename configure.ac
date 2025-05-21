@@ -143,7 +143,7 @@ LIBS="$LIBS -lmaplec"
 #GV Does not seem to work, howto do ? 
 
 #AC_CHECK_LIB(maplec, __EvalMapleProc, , [AC_MSG_ERROR(
- #  [ERROR MAPLELIB])])
+   #[ERROR MAPLELIB])])
 
 
 
