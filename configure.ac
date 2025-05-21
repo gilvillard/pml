@@ -105,6 +105,48 @@ AC_CHECK_LIB(flint, __flint_get_memory_functions, , [AC_MSG_ERROR(
 
 LIBS="$LIBS -lm -lpthread"
 
+
+#################################################
+AS_BOX([          mapml config               ])
+#################################################
+
+
+# Check maple
+#------------
+
+AC_ARG_WITH(maplec,
+      AS_HELP_STRING([--with-maplec=@<:@=DIR@:>@], [Maple include]), [
+         MAPLE_INCDIR="$withval/include"
+      ])
+
+
+CPPFLAGS="$CPPFLAGS -I${MAPLE_INCDIR}"
+
+AC_CHECK_HEADER([maplec.h],
+                [AC_DEFINE([HAVE_MAPLEC], [1],
+                   [with maplec.h])],
+                [AC_MSG_ERROR([Sorry, maplec.h location missing])])
+
+# Note: no lib directory here 
+
+AC_SUBST(MAPLE_INCDIR)
+
+AC_ARG_WITH(maplelib,
+      AS_HELP_STRING([--with-maplelib=@<:@=DIR@:>@], [Maple lib]), [
+         MAPLE_LIBDIR="$withval"
+      ])
+
+
+LDFLAGS="$LDFLAGS -L${MAPLE_LIBDIR}"
+LIBS="$LIBS -lmaplec"
+
+#GV Does not seem to work, howto do ? 
+
+#AC_CHECK_LIB(maplec, __EvalMapleProc, , [AC_MSG_ERROR(
+ #  [ERROR MAPLELIB])])
+
+
+
 ################   PML FILES   #################################
 
 
@@ -134,6 +176,9 @@ flint-extras/Makefile
 flint-extras/include/Makefile
 flint-extras/lib/Makefile
 flint-extras/tests/Makefile
+mapml/Makefile
+mapml/src/Makefile
+mapml/maple/Makefile
 ])
 
 AC_OUTPUT

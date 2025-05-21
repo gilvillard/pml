@@ -1,8 +1,8 @@
 
 # 
-#   Copyright (C) 2025 PML
+#   Copyright (C) 2024 Gilles Villard
 #
-#   This file is part of pml is free software: you
+#   This file is part of mapml. mapml is free software: you
 #   can redistribute it and/or modify it under the terms of the GNU Lesser
 #   General Public License as published by the Free Software Foundation,
 #   either version 2.1 of the License, or (at your option) any later version.
@@ -18,15 +18,9 @@
 
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS= flint-extras mapml
+SUBDIRS= src maple
 
 pkgconfigdir = $(libdir)/pkgconfig
 
 include_pmldir=$(includedir)/pml
 
-#perfpublisher : nmod_mat_extra/tests/perfpublisher
-
-#nmod_mat_extra/tests/perfpublisher:
-#	(cd nmod_mat_extra/tests; ${MAKE} perfpublisher)
-
-EXTRA_DIST= autogen.sh

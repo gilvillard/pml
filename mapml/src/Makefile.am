@@ -1,8 +1,7 @@
-
 # 
-#   Copyright (C) 2025 PML
+#  Copyright (C) 2024 Gilles Villard
 #
-#   This file is part of pml is free software: you
+#   This file is part of mapml. mapml is free software: you
 #   can redistribute it and/or modify it under the terms of the GNU Lesser
 #   General Public License as published by the Free Software Foundation,
 #   either version 2.1 of the License, or (at your option) any later version.
@@ -16,17 +15,22 @@
 #   along with mapml. If not, see <http://www.gnu.org/licenses/>. 
 
 
-ACLOCAL_AMFLAGS = -I m4
+AUTOMAKE_OPTIONS = gnu
 
-SUBDIRS= flint-extras mapml
+include_pmldir= $(includedir)/pml
 
-pkgconfigdir = $(libdir)/pkgconfig
+include_pml_HEADERS =  mapml.h conversion.h matpoly_export.h
 
-include_pmldir=$(includedir)/pml
+lib_LTLIBRARIES = libpml.la
 
-#perfpublisher : nmod_mat_extra/tests/perfpublisher
+libpml_la_SOURCES = mapml.h conversion.h conversion.c dummy_export.c \
+				     matpoly_export.h  matpoly_export.c 
 
-#nmod_mat_extra/tests/perfpublisher:
-#	(cd nmod_mat_extra/tests; ${MAKE} perfpublisher)
+#libmapml_la_LIBADD=/usr/local/lib/libpmlflint.dylib
 
-EXTRA_DIST= autogen.sh
+#libmapml_la_CXXFLAGS= AM_CXXFLAGS
+
+#libmapml_la_LDFLAGS= -shared -fPIC
+
+
+
