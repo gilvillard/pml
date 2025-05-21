@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <random>
 
+#include "mat_lzz_pX_approximant.h"
 #include "util.h"
 #include "mat_lzz_pX_extra.h"
 
@@ -44,39 +45,12 @@ int main(int argc, char *argv[])
     double t, tt;
     long nb_iter=0;
     std::cout << "Timings for NTL's GCD" << degree << std::endl;
-    //{
-    //    t = 0.;
-    //    while (t < 0.2)
-    //    {
-    //        zz_pX a,b,g;
-    //        random(a, degree);
-    //        random(b, degree);
-    //        tt = GetWallTime();
-    //        NTL::GCD(g, a, b);
-    //        t += GetWallTime()-tt;
-    //        ++nb_iter;
-    //    }
-    //    std::cout << "\t GCD --> " << t/nb_iter << std::endl;
-    //}
-    //{
-    //    nb_iter=0;
-    //    t = 0.;
-    //    while (t < 0.2)
-    //    {
-    //        zz_pX a,b,g;
-    //        random(a, degree);
-    //        random(b, degree);
-    //        tt = GetWallTime();
-    //        NTL::PlainGCD(g, a, b);
-    //        t += GetWallTime()-tt;
-    //        ++nb_iter;
-    //    }
-    //    std::cout << "\t GCD --> " << t/nb_iter << std::endl;
-    //}
+
+    if (false)
     {
         nb_iter=0;
         t = 0.;
-        while (t < 0.2)
+        while (t < 0.5)
         {
             zz_pX a,b,g,u,v; 
             random(a, degree);
@@ -92,21 +66,42 @@ int main(int argc, char *argv[])
     // build random matrix
     double t1,t2;
     tt=0.0;
-    Mat<zz_pX> pmat;
-    random(pmat, 2, 1, degree);
-    Mat<zz_pX> appbas;
 
     // via general pmbasis
+    if (false)
+    {
+        tt=0.0; nb_iter=0;
+        Mat<zz_pX> pmat;
+        random(pmat, 2, 1, degree);
+        Mat<zz_pX> appbas;
+        while (tt<0.5)
+        {
+            random(pmat, 2, 1, degree);
+            t1 = GetWallTime();
+            pmbasis(appbas,pmat,2*degree-1,shift);
+            t2 = GetWallTime();
+            tt += t2-t1;
+            ++nb_iter;
+        }
+        std::cout << "Time(pmbasis): " << tt/nb_iter << std::endl;
+    }
+
+    // via general pmbasis_2x1
     tt=0.0; nb_iter=0;
     while (tt<0.5)
     {
+        zz_pX a,b,p00,p01,p10,p11;
+        long s0 = 0;
+        long s1 = 0;
+        random(a, degree);
+        random(b, degree);
         t1 = GetWallTime();
-        pmbasis(appbas,pmat,2*degree-1,shift);
+        pmbasis_2x1(p00,p01,p10,p11,a,b,2*degree-1,s0,s1);
         t2 = GetWallTime();
         tt += t2-t1;
         ++nb_iter;
     }
-    std::cout << "Time(pmbasis): " << tt/nb_iter << std::endl;
+    std::cout << "Time(pmbasis2x1): " << tt/nb_iter << std::endl;
 
 //    // slightly optimized pmbasis
 //    Mat<zz_pX> polys;
