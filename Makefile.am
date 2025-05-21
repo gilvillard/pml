@@ -18,7 +18,7 @@
 
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS= include lib tests 
+SUBDIRS= flint-extras
 
 pkgconfigdir = $(libdir)/pkgconfig
 
@@ -29,3 +29,4 @@ include_pmldir=$(includedir)/pml
 #nmod_mat_extra/tests/perfpublisher:
 #	(cd nmod_mat_extra/tests; ${MAKE} perfpublisher)
 
+EXTRA_DIST= autogen.sh
