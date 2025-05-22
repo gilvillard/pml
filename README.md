@@ -1,5 +1,4 @@
 # PML (Polynomial Matrix Library)
-
 Additions to the NTL and FLINT libraries, with a focus on univariate polynomial
 matrices, structured matrices, and their applications.
 
@@ -18,7 +17,6 @@ Contributors:
  - Kevin Tran
 
 ## Licensing
-
 PML v0.3 is distributed under the GNU General Public License version 2.0
 (GPL-2.0-or-later). This applies to all files in the directory of this README
 as well as in all subdirectories. See the file COPYING for a copy of the
@@ -54,7 +52,6 @@ Public License), see `flint-extras/COPYING_FLINT` for the license.
     note = {Version 0.3, \url{https://github.com/vneiger/pml}}
 }
 ```
-
 ## Installation
 
 If compiling the NTL version, NTL should be installed, version at least 11.3.1
@@ -91,7 +88,7 @@ In `test`, test files should be called test-something.\{c,cpp\}
  - "make something.exe": compiles only test-something.\{c,cpp\}
  - "make something.chk": runs only test-something
 
-In `timings`, timing files should be called time-something.\{c,cpp\}
+   In `timings`, timing files should be called time-something.\{c,cpp\}
 
  - "make" or "make clean": removes all executables and data files (.dat)
  - "make all": compiles all timing files
@@ -110,8 +107,11 @@ Code style:
   - scope delimiters are not required here when they are not required by C++
     (e.g. for one-line if or for)
   - when creating a new file, add the modelines at the bottom of the file:
-
+    
 ```
-/* -*- mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+/* -*- mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */ 
 // vim:sts=4:sw=4:ts=4:et:sr:cino=>s,f0,{0,g0,(0,\:0,t0,+0,=s
 ```
+
+
+
