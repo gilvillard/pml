@@ -29,7 +29,7 @@ include_pmldir=$(includedir)/pml
 
 AM_CPPFLAGS = -I../../include 
 
-LDADD =  ../lib/libpml.la
+LDADD =  ../lib/libpmlflint.la
 
 PERFPUBLISHERFILE=tests-report.xml
 

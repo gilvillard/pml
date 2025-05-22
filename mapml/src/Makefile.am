@@ -21,16 +21,8 @@ include_pmldir= $(includedir)/pml
 
 include_pml_HEADERS =  mapml.h conversion.h matpoly_export.h
 
-lib_LTLIBRARIES = libpml.la
+lib_LTLIBRARIES = libmapml.la
 
-libpml_la_SOURCES = mapml.h conversion.h conversion.c dummy_export.c \
+libmapml_la_SOURCES = mapml.h conversion.h conversion.c dummy_export.c \
 				     matpoly_export.h  matpoly_export.c 
-
-#libmapml_la_LIBADD=/usr/local/lib/libpmlflint.dylib
-
-#libmapml_la_CXXFLAGS= AM_CXXFLAGS
-
-#libmapml_la_LDFLAGS= -shared -fPIC
-
-
 
