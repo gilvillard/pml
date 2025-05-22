@@ -57,7 +57,6 @@ Public License), see `flint-extras/COPYING_FLINT` for the license.
 
 ## Installation
 
-
 If compiling the NTL version, NTL should be installed, version at least 11.3.1
 required.
 
