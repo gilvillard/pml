@@ -59,7 +59,7 @@ mapml:= module()
     #end proc:
 
     # GV rather put in ModuleLoad ? 
-    printf("external %s\n",pml_lib);
+    printf("external %s, %s\n",pml_lib,mapml_lib);
 	ff:=define_external("nmod_poly_mat_init", MAPLE, LIB = pml_lib):
 
 	printf("[pmDeterminant,pmWeakPopov,pmRowWeakPopov]");
