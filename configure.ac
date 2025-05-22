@@ -114,34 +114,32 @@ AS_BOX([          mapml config               ])
 # Check maple
 #------------
 
+AC_MSG_CHECKING([use of maple])
+
 AC_ARG_WITH(maplec,
       AS_HELP_STRING([--with-maplec=@<:@=DIR@:>@], [Maple include]), [
          MAPLE_INCDIR="$withval/include"])
 
 
-#AS_IF(test "$MAPLE_INCDIR" = "", AS_ECHO(NOMAPLE));
-
-MAPLE_CPPFLAGS="$CPPFLAGS -I${MAPLE_INCDIR}"
-AC_SUBST(MAPLE_CPPFLAGS)
-
-
-AC_CHECK_HEADER([$MAPLE_INCDIR/maplec.h],
-                [AC_DEFINE([HAVE_MAPLEC], [1],
+AS_IF([test "x$with_maplec" != "x"], [
+      AS_ECHO("x$with_maplec")
+      MAPLE_CPPFLAGS="$CPPFLAGS -I${MAPLE_INCDIR}"
+      AC_SUBST(MAPLE_CPPFLAGS)
+      AC_CHECK_HEADER([$MAPLE_INCDIR/maplec.h],
+                [AC_DEFINE([WITH_MAPLEC], [1],
                    [with maplec.h])],
                 [AC_MSG_ERROR([Sorry, maplec.h location missing])])
+      AC_ARG_WITH(maplelib,
+            AS_HELP_STRING([--with-maplelib=@<:@=DIR@:>@], [Maple lib]), [
+            MAPLE_LIBDIR="$withval"
+            ])
+      MAPLE_LDFLAGS="$LDFLAGS -L${MAPLE_LIBDIR}"
+      AC_SUBST(MAPLE_LDFLAGS)
+      MAPLE_LIBS="$LIBS -lmaplec"
+      AC_SUBST(MAPLE_LIBS)
+],[AC_MSG_RESULT(no)])
 
-
-AC_ARG_WITH(maplelib,
-      AS_HELP_STRING([--with-maplelib=@<:@=DIR@:>@], [Maple lib]), [
-         MAPLE_LIBDIR="$withval"
-      ])
-
-
-MAPLE_LDFLAGS="$LDFLAGS -L${MAPLE_LIBDIR}"
-AC_SUBST(MAPLE_LDFLAGS)
-
-MAPLE_LIBS="$LIBS -lmaplec"
-AC_SUBST(MAPLE_LIBS)
+AM_CONDITIONAL(WITH_MAPLE, test "x$WITH_MAPLEC" = "xyes")
 
 
 #GV Does not seem to work, howto do ? 

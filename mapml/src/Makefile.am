@@ -15,6 +15,7 @@
 #   along with mapml. If not, see <http://www.gnu.org/licenses/>. 
 
 
+if WITH_MAPLE
 
 AUTOMAKE_OPTIONS = gnu
 
@@ -34,3 +35,4 @@ lib_LTLIBRARIES = libmapml.la
 libmapml_la_SOURCES = mapml.h conversion.h conversion.c dummy_export.c \
 				     matpoly_export.h  matpoly_export.c 
 
+endif
