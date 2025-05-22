@@ -116,20 +116,20 @@ AS_BOX([          mapml config               ])
 
 AC_ARG_WITH(maplec,
       AS_HELP_STRING([--with-maplec=@<:@=DIR@:>@], [Maple include]), [
-         MAPLE_INCDIR="$withval/include"
-      ])
+         MAPLE_INCDIR="$withval/include"])
 
 
-CPPFLAGS="$CPPFLAGS -I${MAPLE_INCDIR}"
+#AS_IF(test "$MAPLE_INCDIR" = "", AS_ECHO(NOMAPLE));
 
-AC_CHECK_HEADER([maplec.h],
+MAPLE_CPPFLAGS="$CPPFLAGS -I${MAPLE_INCDIR}"
+AC_SUBST(MAPLE_CPPFLAGS)
+
+
+AC_CHECK_HEADER([$MAPLE_INCDIR/maplec.h],
                 [AC_DEFINE([HAVE_MAPLEC], [1],
                    [with maplec.h])],
                 [AC_MSG_ERROR([Sorry, maplec.h location missing])])
 
-# Note: no lib directory here 
-
-AC_SUBST(MAPLE_INCDIR)
 
 AC_ARG_WITH(maplelib,
       AS_HELP_STRING([--with-maplelib=@<:@=DIR@:>@], [Maple lib]), [
@@ -137,8 +137,12 @@ AC_ARG_WITH(maplelib,
       ])
 
 
-LDFLAGS="$LDFLAGS -L${MAPLE_LIBDIR}"
-LIBS="$LIBS -lmaplec"
+MAPLE_LDFLAGS="$LDFLAGS -L${MAPLE_LIBDIR}"
+AC_SUBST(MAPLE_LDFLAGS)
+
+MAPLE_LIBS="$LIBS -lmaplec"
+AC_SUBST(MAPLE_LIBS)
+
 
 #GV Does not seem to work, howto do ? 
 

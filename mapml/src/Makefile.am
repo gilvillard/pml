@@ -15,7 +15,15 @@
 #   along with mapml. If not, see <http://www.gnu.org/licenses/>. 
 
 
+
 AUTOMAKE_OPTIONS = gnu
+
+AM_CPPFLAGS = $(MAPLE_CPPFLAGS) 
+
+
+AM_LDFLAGS = $(MAPLE_LDFLAGS)
+
+LIBS = $(MAPLE_LIBS) 
 
 include_pmldir= $(includedir)/pml
 
