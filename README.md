@@ -2,6 +2,8 @@
 Additions to the NTL and FLINT libraries, with a focus on univariate polynomial
 matrices, structured matrices, and their applications.
 
+Maple interface.
+
 Version 0.4
 
 ## Authors
