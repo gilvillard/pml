@@ -126,7 +126,7 @@ AS_IF([test "x$with_maplec" != "x"], [
       MAPLE_CPPFLAGS="$CPPFLAGS -I${MAPLE_INCDIR}"
       AC_SUBST(MAPLE_CPPFLAGS)
       AC_CHECK_HEADER([$MAPLE_INCDIR/maplec.h],
-                [AC_DEFINE([WITH_MAPLEC], [1],
+                [AC_DEFINE([WITH_MAPLEC2], [1],
                    [with maplec.h])],
                 [AC_MSG_ERROR([Sorry, maplec.h location missing])])
       AC_ARG_WITH(maplelib,
@@ -139,8 +139,10 @@ AS_IF([test "x$with_maplec" != "x"], [
       AC_SUBST(MAPLE_LIBS)
 ],[AC_MSG_RESULT(no)])
 
-AM_CONDITIONAL(WITH_MAPLE, test "x$WITH_MAPLEC" = "xyes")
 
+AM_CONDITIONAL(WITH_MAPLE, test "x$with_maplec" != "x")
+
+AS_ECHO("x$with_maplec")
 
 #GV Does not seem to work, howto do ? 
 
