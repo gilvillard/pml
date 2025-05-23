@@ -22,7 +22,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([pml],[0.0.1])
+AC_INIT([pml],[0.4])
 AC_CONFIG_SRCDIR([flint-extras/nmod_extra/src/nmod_extra.c])
 AM_MAINTAINER_MODE([enable])
 AC_CANONICAL_TARGET
