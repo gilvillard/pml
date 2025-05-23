@@ -400,8 +400,8 @@ return res;
 ALGEB pm_matrix_pmbasis(MKernelVector kv, ALGEB *args){
 
 
-   double t = 0.0;
-   clock_t tt;
+   //double t = 0.0;
+   //clock_t tt;
 
 
    ALGEB vectmat=args[2];
@@ -429,13 +429,13 @@ ALGEB pm_matrix_pmbasis(MKernelVector kv, ALGEB *args){
   ulong order = MapleToInteger64(kv,args[3]);
 
 
-  tt = clock();
+  //tt = clock();
 
   nmod_poly_mat_pmbasis(M, shift, A, order);
    //mbasis(M, res_shift, A, order, shift);
 
-  t = (double)(clock()-tt) / CLOCKS_PER_SEC;
-  MapleALGEB_Printf(kv, " ++++  Time pmbasis %f ms\n", ToMapleFloat(kv,t*1000));
+  //t = (double)(clock()-tt) / CLOCKS_PER_SEC;
+  //MapleALGEB_Printf(kv, " ++++  Time pmbasis %f ms\n", ToMapleFloat(kv,t*1000));
 
 
   ALGEB outdct;

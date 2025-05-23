@@ -22,14 +22,16 @@ mapml:= module()
 	# ------------------------------
 
 	export pmPolyRT,pmPolyMatRT,pmMatPolyRT,pmCheckIo, pmCheckDeterminant, 
-	       pmCheck, pmDiffMBasis, pmMatPMBasis, Dev, pmgetcoeffs;
+	       pmCheck, pmDiffMBasis, Dev, pmgetcoeffs;
 
 	
 
 	# put global, otherwise and export of `mod/pmDeterminant` does not seem to allow 
 	# a call using eg pmDeterminant(A) mod q 
 
-	global `mod/pmDeterminant`,`mod/pmWeakPopov`,`mod/pmRowWeakPopov`,`mod/pmMBasis`,`mod/pmRowMBasis`;
+	global `mod/pmDeterminant`,`mod/pmWeakPopov`,`mod/pmRowWeakPopov`,
+			`mod/pmMBasis`,`mod/pmRowMBasis`,
+			`mod/pmPMBasis`,`mod/pmRowPMBasis`;
 
 	option package, load=Init, unload=End: 
 	
@@ -62,7 +64,7 @@ mapml:= module()
     printf("external %s, %s\n",pml_lib,mapml_lib);
 	ff:=define_external("nmod_poly_mat_init", MAPLE, LIB = pml_lib):
 
-	printf("[pmDeterminant,pmWeakPopov,pmRowWeakPopov]");
+	printf("[pmDeterminant, pmWeakPopov, pmRowWeakPopov, pmPMBasis, pmMBasis, pmRowPMBasis, pmRowMBasis]");
 		
 
 	# Local functions for conversions
@@ -249,7 +251,8 @@ mapml:= module()
 	end proc: 
 
 
-	pmMatPMBasis :=proc(shift, A, order, x, q) local t,vect_A,res,tt; 
+
+	`mod/pmRowPMBasis` :=proc(A, x, shift, order, q) local t,vect_A,res,tt; 
 	
 		
 		tt:=time();
@@ -258,7 +261,7 @@ mapml:= module()
 
 		tt:=time()-tt;
 
-		userinfo(1,'gfun',sprintf("+++++ pmbasis 1: %f ms",1000*tt));
+		#userinfo(1,'gfun',sprintf("+++++ pmbasis 1: %f ms",1000*tt));
 
 		res:=Dev:-pm_matrix_pmbasis(shift, vect_A, order, q);
 
@@ -268,9 +271,20 @@ mapml:= module()
 
 		tt:=time()-tt;
 
-		userinfo(1,'gfun',sprintf("+++++ pmbasis 2: %f ms",1000*tt));
+		#userinfo(1,'gfun',sprintf("+++++ pmbasis 2: %f ms",1000*tt));
 
 		return(res):
+
+	end proc: 
+
+
+	`mod/pmPMBasis` :=proc(A, x, shift, order, q) local res; 
+	
+
+		res:=`mod/pmRowPMBasis`(LinearAlgebra:-Transpose(A), x, shift, order, q);
+
+
+		return(LinearAlgebra:-Transpose(res[1]),res[2]):
 
 	end proc: 
 
