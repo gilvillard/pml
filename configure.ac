@@ -122,7 +122,6 @@ AC_ARG_WITH(maplec,
 
 
 AS_IF([test "x$with_maplec" != "x"], [
-      AS_ECHO("x$with_maplec")
       MAPLE_CPPFLAGS="$CPPFLAGS -I${MAPLE_INCDIR}"
       AC_SUBST(MAPLE_CPPFLAGS)
       AC_CHECK_HEADER([$MAPLE_INCDIR/maplec.h],
