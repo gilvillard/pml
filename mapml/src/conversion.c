@@ -125,7 +125,7 @@ ALGEB nmod_mat_poly_to_algeb(MKernelVector kv, const nmod_mat_poly_t Ain){
 
         return maple_A;
 
-}
+    }
 
 
 /**********************************************************
@@ -135,7 +135,7 @@ ALGEB nmod_mat_poly_to_algeb(MKernelVector kv, const nmod_mat_poly_t Ain){
  * 
  ***********************************************************/
 
-ALGEB nmod_poly_mat_to_algeb(MKernelVector kv, const nmod_poly_mat_t A){
+    ALGEB nmod_poly_mat_to_algeb(MKernelVector kv, const nmod_poly_mat_t A){
 
         ALGEB maple_A; 
 
@@ -191,7 +191,7 @@ ALGEB nmod_poly_mat_to_algeb(MKernelVector kv, const nmod_poly_mat_t A){
 
             return maple_A;
 
-}
+        }
 
 
 /************************************************************
@@ -206,10 +206,10 @@ ALGEB nmod_poly_mat_to_algeb(MKernelVector kv, const nmod_poly_mat_t A){
  *************************************************************/
 
 
-void get_nmod_poly(nmod_poly_t p,   const ulong modulus, MKernelVector kv, ALGEB vect){
+        void get_nmod_poly(nmod_poly_t p,   const ulong modulus, MKernelVector kv, ALGEB vect){
 
 
-    nmod_poly_init(p, modulus); 
+            nmod_poly_init(p, modulus); 
 
     M_INT d;   // The degree   // slong flint or M_INT ? 
 
@@ -223,7 +223,7 @@ void get_nmod_poly(nmod_poly_t p,   const ulong modulus, MKernelVector kv, ALGEB
     for (slong i=1; i<=d+1; i++) {
 
         index[0]=i;
-    
+
         tmp = RTableSelect(kv,vect,index);
 
         nmod_poly_set_coeff_ui(p,i-1,MapleToInteger64(kv,tmp.dag));
@@ -321,7 +321,7 @@ void get_nmod_mat_poly(nmod_mat_poly_t Aout,   const ulong modulus, MKernelVecto
 
 
     // Loop on the entries of the matrix 
-    for (slong i=1; i<m+1; i++)
+    for (slong i=1; i<m+1; i++) {
         for (slong j=1; j<n+1; j++){
 
             index[0]=i;
@@ -339,16 +339,17 @@ void get_nmod_mat_poly(nmod_mat_poly_t Aout,   const ulong modulus, MKernelVecto
 
             }
         }
-
-        nmod_mat_poly_init(Aout, m, n, modulus);
-
-        slong len = nmod_poly_mat_max_length(A);
-
-        nmod_mat_poly_set_trunc_from_poly_mat(Aout,A,len);
-
-        nmod_poly_mat_clear(A);
-
     }
+    
+    nmod_mat_poly_init(Aout, m, n, modulus);
+
+    slong len = nmod_poly_mat_max_length(A);
+
+    nmod_mat_poly_set_trunc_from_poly_mat(Aout,A,len);
+
+    nmod_poly_mat_clear(A);
+
+}
 
 
 /************************************************************
@@ -454,13 +455,13 @@ void get_nmod_poly_mat(nmod_poly_mat_t A,   const ulong modulus, MKernelVector k
  *************************************************************/
 
 
-void get_fmpq_poly(fmpq_poly_t p, MKernelVector kv, ALGEB mappol){
+    void get_fmpq_poly(fmpq_poly_t p, MKernelVector kv, ALGEB mappol){
 
 
-    fmpq_poly_init(p); 
+        fmpq_poly_init(p); 
 
-    fmpq_t q;
-    fmpq_init(q);
+        fmpq_t q;
+        fmpq_init(q);
 
     M_INT d;   // The degree   // slong flint or M_INT ? 
 
@@ -476,7 +477,7 @@ void get_fmpq_poly(fmpq_poly_t p, MKernelVector kv, ALGEB mappol){
     for (slong i=1; i<=d+1; i++) {
 
         index[0]=i;
-    
+
         tmp = RTableSelect(kv,mappol,index);
 
         fmpq_set_str(q, MapleToString(kv,tmp.dag), 10);
@@ -512,16 +513,16 @@ void get_fmpq_poly_array(fmpq_poly_t *vp, MKernelVector kv, ALGEB vmaple){
     // Loop on the entries 
 
     for (slong i=1; i<m+1; i++){
-        
-            index[0]=i;
-           
-            tmp = RTableSelect(kv,vmaple,index);
 
-            get_fmpq_poly(vp[i-1], kv, tmp.dag);
+        index[0]=i;
 
-        }
+        tmp = RTableSelect(kv,vmaple,index);
+
+        get_fmpq_poly(vp[i-1], kv, tmp.dag);
 
     }
+
+}
 
 
 
