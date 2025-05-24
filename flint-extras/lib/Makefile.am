@@ -33,14 +33,16 @@ VPATH= 	../nmod_extra/src \
 
 lib_LTLIBRARIES = libpml.la
 
-libpml_la_SOURCES=  nmod_find_root.c    \
+#libpml_la_SOURCES=  nmod_find_root.c    \
 			        nmod_multimod_CRT_clear.c   \
 			        nmod_multimod_CRT_reduce.c \
 			        nmod_extra.c \
 			        nmod_multimod_CRT_CRT.c \
 			        nmod_multimod_CRT_init.c  
 
-libpml_la_SOURCES+= fmpz_multi_CRT_combine.c \
+#!!!!  += if uncomment previous 
+
+libpml_la_SOURCES= fmpz_multi_CRT_combine.c \
 					fmpz_multimod_naive_clear.c \
 					fmpz_CRT_naive_CRT.c	\
 					fmpz_multimod_CRT_CRT.c	\
